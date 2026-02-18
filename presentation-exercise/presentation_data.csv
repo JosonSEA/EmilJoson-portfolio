@@ -1,0 +1,53 @@
+﻿Group,age_group,percent,religion
+1,18-29,38,Unaffiliated
+2,30-49,26,Unaffiliated
+3,50-64,18,Unaffiliated
+4,65,12,Unaffiliated
+5,18-29,1,Other religion
+6,30-49,1,Other religion
+7,50-64,1,Other religion
+8,65,1,Other religion
+9,18-29,4,Other world Religion
+10,30-49,3,Other world Religion
+11,50-64,1,Other world Religion
+12,65,1,Other world Religion
+13,18-29,1,Jewish
+14,30-49,1,Jewish
+15,50-64,2,Jewish
+16,65,2,Jewish
+17,18-29,7,Other Christian
+18,30-49,6,Other Christian
+19,50-64,6,Other Christian
+20,65,5,Other Christian
+21,18-29,9,Hispanic Catholic
+22,30-49,10,Hispanic Catholic
+23,50-64,6,Hispanic Catholic
+24,65,4,Hispanic Catholic
+25,18-29,6,Hispanic Protestant
+26,30-49,5,Hispanic Protestant
+27,50-64,2,Hispanic Protestant
+28,65,1,Hispanic Protestant
+29,18-29,7,Black Protestant
+30,30-49,8,Black Protestant
+31,50-64,9,Black Protestant
+32,65,7,Black Protestant
+33,18-29,2,Mormon
+34,30-49,2,Mormon
+35,50-64,2,Mormon
+36,65,2,Mormon
+37,18-29,6,White Catholic
+38,30-49,9,White Catholic
+39,50-64,15,White Catholic
+40,65,16,White Catholic
+41,18-29,8,White mainline Protestant
+42,30-49,11,White mainline Protestant
+43,50-64,15,White mainline Protestant
+44,65,19,White mainline Protestant
+45,18-29,8,White evangelical Protestant
+46,30-49,14,White evangelical Protestant
+47,50-64,21,White evangelical Protestant
+48,65,26,White evangelical Protestant
+49,18-29,3,Don't know
+50,30-49,3,Don't know
+51,50-64,3,Don't know
+52,65,3,Don't know
