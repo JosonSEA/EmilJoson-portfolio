@@ -1,0 +1,228 @@
+---
+title: "Fitting Exercise"
+---
+
+**Data Preparation**
+
+```{r setup, warning=FALSE, message=FALSE}
+#load modules
+library(here) #for relative paths
+library(tidyverse) #for data wrangling
+library(ggplot2) #for plots
+library(corrplot) #for correlation plot
+library(tidymodels) #for model fitting
+
+#raw file URL
+url <- "https://raw.githubusercontent.com/metrumresearchgroup/BayesPBPK-tutorial/master/data/Mavoglurant_A2121_nmpk.csv"
+
+#download file
+download.file(url,
+              destfile = "fitting-exercise/Mavoglurant_A2121_nmpk.csv",
+              mode = "wb")
+
+#data path
+data_path <- here("fitting-exercise", "Mavoglurant_A2121_nmpk.csv")
+
+#load data
+data <- read.csv(here(data_path))
+
+#explore the data
+str(data)
+head(data, 10)
+
+#write code to make a plot that shows a line for each individual, with DV on the y-axis and time on the x-axis. Stratify by dose (e.g., use a different color for each dose, or facets).
+ggplot(data, aes(x=TIME, y=DV, group=ID))+
+  geom_line(alpha=0.6, color="darkgrey")+
+  geom_point(size=1, color="black")+
+  theme_bw()+
+  facet_wrap(~ DOSE)
+
+#Write code that keeps only observations with OCC = 1.
+data2 <- data %>%
+  filter(OCC==1) #only keep OCC=1
+
+#Write code to exclude the observations with TIME = 0, then compute the sum of the DV variable for each individual using dplyr::summarize(). Call this variable Y. The result from this step should be a data frame/tibble of size 120 x 2, one column for the ID one for the variable Y. Next, create a data frame that contains only the observations where TIME == 0. This should be a tibble of size 120 x 17. Finally, use the appropriate join function to combine those two data frames, to get a data frame of size 120 x 18.
+
+data3 <- data2 %>%
+  filter(TIME!=0) #excluding TIME=0
+
+sumDV <- data3 %>%
+  group_by(ID) %>%
+  summarize(Y = sum(DV), .groups = "drop") #DV sum of each individual
+
+time0 <- data2 %>%
+  filter(TIME==0) #only observations with time=0
+
+data4 <- left_join(time0, sumDV, by = "ID") #join sumDV and time0
+
+data5 <- data4 %>%
+  mutate(
+    RACE = factor(RACE),
+    SEX  = factor(SEX)
+  ) %>%
+  select(Y, DOSE, AGE, SEX, RACE, WT, HT) #convert SEX and RACE to factors; keep certain variables
+```
+
+**Additional EDA**
+
+
+```{r}
+summary(data5)
+
+data5 %>%
+  group_by(SEX) %>%
+  summarize(
+    n = n(),
+    mean_Y = mean(Y),
+    sd_Y = sd(Y)
+  ) #summary table by SEX
+
+#categorical predictor: SEX
+ggplot(data5, aes(x = SEX, y = Y)) +
+  geom_boxplot() +
+  theme_bw()
+
+#Mean Y is slightly higher on average in SEX=1 compared to SEX=2, but variability is similar and SEX=2 is a drastically smaller sample size
+
+data5 %>%
+  group_by(RACE) %>%
+  summarize(
+    n = n(),
+    mean_Y = mean(Y),
+    sd_Y = sd(Y)
+  ) #summary table by RACE
+
+#categorical predictor: RACE
+ggplot(data5, aes(x = RACE, y = Y)) +
+  geom_boxplot() +
+  theme_bw()
+
+#Mean Y varies across RACE, but comparisons are difficult with RACE=7 and RACE=88 having drastically smaller sample sizes than RACE=1 and RACE=2
+
+#distribution of Y
+ggplot(data5, aes(x = Y)) +
+  geom_histogram(bins = 30) +
+  theme_bw()
+#Y appears slightly skewed. Should check based on DOSE
+
+#distribution of Y (based on DOSE)
+ggplot(data5, aes(x = Y, fill = as.factor(DOSE))) +
+  geom_histogram(alpha = 0.5, position = "identity", bins = 20) +
+  theme_bw() +
+  labs(fill = "Dose")
+#Some overlap but histograms show Y increases with DOSE
+
+#categorical predictor: DOSE
+ggplot(data5, aes(x = as.factor(DOSE), y = Y)) +
+  geom_boxplot() +
+  theme_bw()
+#boxplots support Y increasing by DOSE
+
+#distribution of HT
+ggplot(data5, aes(x = HT)) +
+  geom_histogram(bins = 30) +
+  theme_bw()
+#HT relatively normal
+
+#distribution of WT
+ggplot(data5, aes(x = WT)) +
+  geom_histogram(bins = 30) +
+  theme_bw()
+#WT relatively normal
+
+#plot AGE VS Y
+  ggplot(data5, aes(x = AGE, y = Y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw()
+#Little to no relationship between AGE and Y
+
+#plot WT VS Y
+ggplot(data5, aes(x = WT, y = Y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw()
+#Some negative association between WT and Y
+
+#plot HT VS Y
+ggplot(data5, aes(x = HT, y = Y)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_bw()
+#Some negative association between HT and Y
+
+#correlation matrix
+cor <- data5 %>%
+  select(Y, DOSE, AGE, WT, HT) %>%
+  cor()
+cor
+
+#correlation plot
+corrplot(cor,
+         method = "color",
+         type = "upper",
+         addCoef.col = "black",
+         tl.col = "black",
+         tl.srt = 45)
+
+#Y is strongly positively correlated with DOSE, weakly negatively with HT and WT. HT and WT are moderately correlated with each other.
+```
+
+**Model Fitting**
+
+```{r}
+set.seed(123) #for reproducibility
+lm_mod <- linear_reg()
+
+#Fit a linear model to Y using DOSE
+lm_fit1 <- lm_mod %>%
+  fit(Y ~ DOSE, data = data5)
+lm_fit1 
+#Y roughly increases by 58 units for each 1 unit of DOSE
+
+#Fit a linear model to Y using all predictors
+lm_fit2 <- lm_mod %>%
+  fit(Y ~ ., data = data5)
+lm_fit2
+
+#Compute RMSE and R-squared for both models
+preds1 <- predict(lm_fit1, new_data = data5) %>%
+  bind_cols(data5 %>% select(Y))
+rmse(preds1, truth = Y, estimate = .pred)
+rsq(preds1, truth = Y, estimate = .pred)
+#For the first model (Y ~ DOSE), RMSE is 666 and rsq is 0.52
+
+preds2 <- predict(lm_fit2, new_data = data5) %>%
+  bind_cols(data5 %>% select(Y))
+rmse(preds2, truth = Y, estimate = .pred)
+rsq(preds2, truth = Y, estimate = .pred)
+#For the second model (Y ~ .), RMSE is 591 and rsq is 0.62
+
+log_mod <- logistic_reg() %>%
+  set_engine("glm")
+
+#Fit a log model to Y using SEX
+log_fit1 <- log_mod %>%
+  fit(SEX ~ DOSE, data = data5)
+log_fit1
+
+#Fit a log model to Y using all predictors
+log_fit2 <- log_mod %>%
+  fit(SEX ~ DOSE + AGE + RACE + WT + HT, data = data5)
+log_fit2
+
+#Compute accuracy and ROC-AUC for both models
+pred_class1 <- predict(log_fit1, new_data = data5, type = "class")
+pred_prob1  <- predict(log_fit1, new_data = data5, type = "prob")
+results1 <- bind_cols(data5 %>% select(SEX), pred_class1, pred_prob1)
+accuracy(results1, truth = SEX, estimate = .pred_class)
+roc_auc(results1, truth = SEX, .pred_2)
+#For the first log model (SEX ~ DOSE), accuracy is 0.867 and ROC AUC is 0.41
+
+pred_class2 <- predict(log_fit2, new_data = data5, type = "class")
+pred_prob2  <- predict(log_fit2, new_data = data5, type = "prob")
+results2 <- bind_cols(data5 %>% select(SEX), pred_class2, pred_prob2)
+accuracy(results2, truth = SEX, estimate = .pred_class)
+roc_auc(results2, truth = SEX, .pred_2)
+#For the second log model (SEX ~ .), accuracy is 0.94 and ROC AUC is 0.025
+```
