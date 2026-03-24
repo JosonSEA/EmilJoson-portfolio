@@ -226,3 +226,113 @@ accuracy(results2, truth = SEX, estimate = .pred_class)
 roc_auc(results2, truth = SEX, .pred_2)
 #For the second log model (SEX ~ .), accuracy is 0.94 and ROC AUC is 0.025
 ```
+
+**Module 10: Model Improvement**
+
+```{r}
+##Data Prep
+#remove the RACE variable
+data6 <- subset(data5, select= -RACE)
+
+#set seed
+rngseed = 1234
+set.seed(rngseed)
+
+#data split
+data_split <- initial_split(data6, prop = 3/4)
+
+#create data frames for the two sets:
+train_data <- training(data_split)
+test_data <- testing(data_split)
+
+##Model Fitting
+#Fit a linear model to Y using DOSE
+lm_fit_10.1 <- lm_mod %>%
+  fit(Y ~ DOSE, data = train_data)
+lm_fit_10.1 
+#Y roughly increases by 58 units for each 1 unit of DOSE
+
+#Fit a linear model to Y using all predictors
+lm_fit_10.2 <- lm_mod %>%
+  fit(Y ~ ., data = train_data)
+lm_fit_10.2
+
+##Model Performance Assessment 1
+#Compute RMSE and R-squared for both models
+preds_10.1 <- predict(lm_fit_10.1, new_data = train_data) %>%
+  bind_cols(train_data %>% select(Y))
+rmse(preds_10.1, truth = Y, estimate = .pred)
+rsq(preds_10.1, truth = Y, estimate = .pred)
+#For the first model (Y ~ DOSE), RMSE is 703 and rsq is 0.451
+
+preds_10.2 <- predict(lm_fit_10.2, new_data = train_data) %>%
+  bind_cols(train_data %>% select(Y))
+rmse(preds_10.2, truth = Y, estimate = .pred)
+rsq(preds_10.2, truth = Y, estimate = .pred)
+#For the second model (Y ~ .), RMSE is 627 and rsq is 0.562
+
+#define null model
+null_mod <- null_model(mode="regression") %>%
+  set_engine("parsnip")
+#fit the null model
+null_fit <- null_mod %>%
+  fit(Y ~ 1, data = train_data)
+#compute RMSE
+null_preds <- predict(null_fit, new_data = train_data) %>%
+  bind_cols(train_data %>% select(Y))
+rmse(null_preds, truth = Y, estimate = .pred)
+#for the null model, RMSE is 948
+
+##Model Performance Assessment 2
+#create 10-fold cross-validation splits
+folds <- vfold_cv(train_data, v=10)
+
+#perform cross-validation for Model 1 (Y ~ DOSE)
+cv_fit1 <- lm_mod %>%
+  fit_resamples(
+    Y ~ DOSE,
+    resamples = folds,
+    metrics = metric_set(rmse)
+  )
+#RMSE 691
+
+#perform cross-validation for Model 2 (Y ~ all predictors)
+cv_fit2 <- lm_mod %>%
+  fit_resamples(
+    Y ~ .,
+    resamples = folds,
+    metrics = metric_set(rmse)
+  )
+#RMSE 640
+
+collect_metrics(cv_fit1)
+collect_metrics(cv_fit2)
+
+#Now with a new seed
+rngseed2 = 5678
+set.seed(rngseed2)
+#create 10-fold cross-validation splits
+folds <- vfold_cv(train_data, v=10)
+
+#perform cross-validation for Model 1 (Y ~ DOSE)
+cv_fit3 <- lm_mod %>%
+  fit_resamples(
+    Y ~ DOSE,
+    resamples = folds,
+    metrics = metric_set(rmse)
+  )
+#RMSE 693
+
+#perform cross-validation for Model 2 (Y ~ all predictors)
+cv_fit4 <- lm_mod %>%
+  fit_resamples(
+    Y ~ .,
+    resamples = folds,
+    metrics = metric_set(rmse)
+  )
+#RMSE 649
+
+collect_metrics(cv_fit3)
+collect_metrics(cv_fit4)
+```
+
