@@ -537,12 +537,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>I admit, there’s one glaring part of the figure I haven’t figured out.</p>
 <p>Here is a cute little table though.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'gt' was built under R version 4.2.3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'scales'</code></pre>
@@ -557,86 +554,80 @@ Attaching package: 'scales'</code></pre>
 
     col_factor</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtExtras)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'gtExtras' was built under R version 4.2.3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(svglite)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: package 'svglite' was built under R version 4.2.3</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>tab_wide <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">as.character</span>(age_group)) <span class="sc">%&gt;%</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, age_group, percent) <span class="sc">%&gt;%</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> age_group,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> percent</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># optional: order religions top-&gt;bottom like your plot</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">factor</span>(religion, <span class="at">levels =</span> <span class="fu">rev</span>(religion_levels_bottom_to_top)))</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>gt_tbl <span class="ot">&lt;-</span> tab_wide <span class="sc">%&gt;%</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">rowname_col =</span> <span class="st">"religion"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**A generational shift in religious identity**"</span>),</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Share of respondents by age group and religious affiliation"</span></span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">18-29</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"18–29"</span>,</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">30-49</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"30–49"</span>,</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">50-64</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"50–64"</span>,</span>
-<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">+65</span><span class="st">`</span>   <span class="ot">=</span> <span class="st">"65+"</span></span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(</span>
-<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">18-29</span><span class="st">`</span>, <span class="st">`</span><span class="at">30-49</span><span class="st">`</span>, <span class="st">`</span><span class="at">50-64</span><span class="st">`</span>, <span class="st">`</span><span class="at">+65</span><span class="st">`</span>),</span>
-<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">decimals =</span> <span class="dv">0</span></span>
-<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># light “heatmap” shading to make patterns pop</span></span>
-<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_color</span>(</span>
-<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">18-29</span><span class="st">`</span>, <span class="st">`</span><span class="at">30-49</span><span class="st">`</span>, <span class="st">`</span><span class="at">50-64</span><span class="st">`</span>, <span class="st">`</span><span class="at">+65</span><span class="st">`</span>),</span>
-<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> scales<span class="sc">::</span><span class="fu">col_numeric</span>(</span>
-<span id="cb17-33"><a href="#cb17-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#f5f5f5"</span>, <span class="st">"#d9e4d1"</span>, <span class="st">"#557A2E"</span>),</span>
-<span id="cb17-34"><a href="#cb17-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain =</span> <span class="cn">NULL</span></span>
-<span id="cb17-35"><a href="#cb17-35" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb17-36"><a href="#cb17-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-37"><a href="#cb17-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb17-38"><a href="#cb17-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb17-39"><a href="#cb17-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>(<span class="fu">everything</span>())</span>
-<span id="cb17-40"><a href="#cb17-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-41"><a href="#cb17-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb17-42"><a href="#cb17-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.names =</span> <span class="st">"Arial"</span>,</span>
-<span id="cb17-43"><a href="#cb17-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="dv">12</span>,</span>
-<span id="cb17-44"><a href="#cb17-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">row_group.font.weight =</span> <span class="st">"bold"</span>,</span>
-<span id="cb17-45"><a href="#cb17-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">5</span>),</span>
-<span id="cb17-46"><a href="#cb17-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.align =</span> <span class="st">"left"</span></span>
-<span id="cb17-47"><a href="#cb17-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb17-48"><a href="#cb17-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="fu">md</span>(<span class="st">"Values are percentages; totals may not equal 100 due to rounding."</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtExtras)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(svglite)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>tab_wide <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">as.character</span>(age_group)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, age_group, percent) <span class="sc">%&gt;%</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_from =</span> age_group,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_from =</span> percent</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># optional: order religions top-&gt;bottom like your plot</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">factor</span>(religion, <span class="at">levels =</span> <span class="fu">rev</span>(religion_levels_bottom_to_top)))</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>gt_tbl <span class="ot">&lt;-</span> tab_wide <span class="sc">%&gt;%</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">rowname_col =</span> <span class="st">"religion"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**A generational shift in religious identity**"</span>),</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Share of respondents by age group and religious affiliation"</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">18-29</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"18–29"</span>,</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">30-49</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"30–49"</span>,</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">50-64</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"50–64"</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">+65</span><span class="st">`</span>   <span class="ot">=</span> <span class="st">"65+"</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">18-29</span><span class="st">`</span>, <span class="st">`</span><span class="at">30-49</span><span class="st">`</span>, <span class="st">`</span><span class="at">50-64</span><span class="st">`</span>, <span class="st">`</span><span class="at">+65</span><span class="st">`</span>),</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">decimals =</span> <span class="dv">0</span></span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># light “heatmap” shading to make patterns pop</span></span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_color</span>(</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">18-29</span><span class="st">`</span>, <span class="st">`</span><span class="at">30-49</span><span class="st">`</span>, <span class="st">`</span><span class="at">50-64</span><span class="st">`</span>, <span class="st">`</span><span class="at">+65</span><span class="st">`</span>),</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> scales<span class="sc">::</span><span class="fu">col_numeric</span>(</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#f5f5f5"</span>, <span class="st">"#d9e4d1"</span>, <span class="st">"#557A2E"</span>),</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain =</span> <span class="cn">NULL</span></span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>(<span class="fu">everything</span>())</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.names =</span> <span class="st">"Arial"</span>,</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="dv">12</span>,</span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">row_group.font.weight =</span> <span class="st">"bold"</span>,</span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">5</span>),</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.align =</span> <span class="st">"left"</span></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="fu">md</span>(<span class="st">"Values are percentages; totals may not equal 100 due to rounding."</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Since gt v0.9.0, the `colors` argument has been deprecated.
 • Please use the `fn` argument instead.
 This warning is displayed once every 8 hours.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>gt_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>gt_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="zgfkqddjbv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zgfkqddjbv table {
+<div id="bpjvadfzwu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bpjvadfzwu table {
   font-family: Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zgfkqddjbv thead, #zgfkqddjbv tbody, #zgfkqddjbv tfoot, #zgfkqddjbv tr, #zgfkqddjbv td, #zgfkqddjbv th {
+#bpjvadfzwu thead, #bpjvadfzwu tbody, #bpjvadfzwu tfoot, #bpjvadfzwu tr, #bpjvadfzwu td, #bpjvadfzwu th {
   border-style: none;
 }
 
-#zgfkqddjbv p {
+#bpjvadfzwu p {
   margin: 0;
   padding: 0;
 }
 
-#zgfkqddjbv .gt_table {
+#bpjvadfzwu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -662,12 +653,12 @@ This warning is displayed once every 8 hours.</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_caption {
+#bpjvadfzwu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zgfkqddjbv .gt_title {
+#bpjvadfzwu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -679,7 +670,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-width: 0;
 }
 
-#zgfkqddjbv .gt_subtitle {
+#bpjvadfzwu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -691,7 +682,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-top-width: 0;
 }
 
-#zgfkqddjbv .gt_heading {
+#bpjvadfzwu .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -703,13 +694,13 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_bottom_border {
+#bpjvadfzwu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_col_headings {
+#bpjvadfzwu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -724,7 +715,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_col_heading {
+#bpjvadfzwu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -744,7 +735,7 @@ This warning is displayed once every 8 hours.</code></pre>
   overflow-x: hidden;
 }
 
-#zgfkqddjbv .gt_column_spanner_outer {
+#bpjvadfzwu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -756,15 +747,15 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 4px;
 }
 
-#zgfkqddjbv .gt_column_spanner_outer:first-child {
+#bpjvadfzwu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zgfkqddjbv .gt_column_spanner_outer:last-child {
+#bpjvadfzwu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zgfkqddjbv .gt_column_spanner {
+#bpjvadfzwu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -776,11 +767,11 @@ This warning is displayed once every 8 hours.</code></pre>
   width: 100%;
 }
 
-#zgfkqddjbv .gt_spanner_row {
+#bpjvadfzwu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zgfkqddjbv .gt_group_heading {
+#bpjvadfzwu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -806,7 +797,7 @@ This warning is displayed once every 8 hours.</code></pre>
   text-align: left;
 }
 
-#zgfkqddjbv .gt_empty_group_heading {
+#bpjvadfzwu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -821,15 +812,15 @@ This warning is displayed once every 8 hours.</code></pre>
   vertical-align: middle;
 }
 
-#zgfkqddjbv .gt_from_md > :first-child {
+#bpjvadfzwu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zgfkqddjbv .gt_from_md > :last-child {
+#bpjvadfzwu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zgfkqddjbv .gt_row {
+#bpjvadfzwu .gt_row {
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 5px;
@@ -848,7 +839,7 @@ This warning is displayed once every 8 hours.</code></pre>
   overflow-x: hidden;
 }
 
-#zgfkqddjbv .gt_stub {
+#bpjvadfzwu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -861,7 +852,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#zgfkqddjbv .gt_stub_row_group {
+#bpjvadfzwu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -875,15 +866,15 @@ This warning is displayed once every 8 hours.</code></pre>
   vertical-align: top;
 }
 
-#zgfkqddjbv .gt_row_group_first td {
+#bpjvadfzwu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zgfkqddjbv .gt_row_group_first th {
+#bpjvadfzwu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zgfkqddjbv .gt_summary_row {
+#bpjvadfzwu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -893,16 +884,16 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#zgfkqddjbv .gt_first_summary_row {
+#bpjvadfzwu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_first_summary_row.thick {
+#bpjvadfzwu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zgfkqddjbv .gt_last_summary_row {
+#bpjvadfzwu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -912,7 +903,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_grand_summary_row {
+#bpjvadfzwu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -922,7 +913,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#zgfkqddjbv .gt_first_grand_summary_row {
+#bpjvadfzwu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -932,7 +923,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_last_grand_summary_row_top {
+#bpjvadfzwu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -942,11 +933,11 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_striped {
+#bpjvadfzwu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zgfkqddjbv .gt_table_body {
+#bpjvadfzwu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -955,7 +946,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_footnotes {
+#bpjvadfzwu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -969,7 +960,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_footnote {
+#bpjvadfzwu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -978,7 +969,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#zgfkqddjbv .gt_sourcenotes {
+#bpjvadfzwu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -992,7 +983,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#zgfkqddjbv .gt_sourcenote {
+#bpjvadfzwu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1000,64 +991,73 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#zgfkqddjbv .gt_left {
+#bpjvadfzwu .gt_left {
   text-align: left;
 }
 
-#zgfkqddjbv .gt_center {
+#bpjvadfzwu .gt_center {
   text-align: center;
 }
 
-#zgfkqddjbv .gt_right {
+#bpjvadfzwu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zgfkqddjbv .gt_font_normal {
+#bpjvadfzwu .gt_font_normal {
   font-weight: normal;
 }
 
-#zgfkqddjbv .gt_font_bold {
+#bpjvadfzwu .gt_font_bold {
   font-weight: bold;
 }
 
-#zgfkqddjbv .gt_font_italic {
+#bpjvadfzwu .gt_font_italic {
   font-style: italic;
 }
 
-#zgfkqddjbv .gt_super {
+#bpjvadfzwu .gt_super {
   font-size: 65%;
 }
 
-#zgfkqddjbv .gt_footnote_marks {
+#bpjvadfzwu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zgfkqddjbv .gt_asterisk {
+#bpjvadfzwu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zgfkqddjbv .gt_indent_1 {
+#bpjvadfzwu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zgfkqddjbv .gt_indent_2 {
+#bpjvadfzwu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zgfkqddjbv .gt_indent_3 {
+#bpjvadfzwu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zgfkqddjbv .gt_indent_4 {
+#bpjvadfzwu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zgfkqddjbv .gt_indent_5 {
+#bpjvadfzwu .gt_indent_5 {
   text-indent: 25px;
+}
+
+#bpjvadfzwu .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#bpjvadfzwu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
 }
 </style>
 
@@ -1070,11 +1070,11 @@ This warning is displayed once every 8 hours.</code></pre>
 <td colspan="5" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Share of respondents by age group and religious affiliation</td>
 </tr>
 <tr class="gt_col_headings header">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="18–29" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">18–29</th>
-<th id="30–49" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">30–49</th>
-<th id="50–64" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">50–64</th>
-<th id="65+" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">65+</th>
+<th id="a::stub" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a18-29" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">18–29</th>
+<th id="a30-49" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">30–49</th>
+<th id="a50-64" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">50–64</th>
+<th id="a+65" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">65+</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
@@ -1169,8 +1169,8 @@ This warning is displayed once every 8 hours.</code></pre>
 <td class="gt_row gt_right" headers="stub_1_13 50-64" style="background-color: #EFF2EE; color: #000000">3</td>
 <td class="gt_row gt_right" headers="stub_1_13 +65" style="background-color: #F1F2EF; color: #000000">3</td>
 </tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
 <td colspan="5" class="gt_sourcenote">Values are percentages; totals may not equal 100 due to rounding.</td>
 </tr>
 </tfoot>
@@ -1182,87 +1182,87 @@ This warning is displayed once every 8 hours.</code></pre>
 </div>
 <p>But when I tried adding a trendline, it ceased to be the cute little table I’ve grown to love.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>age_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"18-29"</span>, <span class="st">"30-49"</span>, <span class="st">"50-64"</span>, <span class="st">"+65"</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Build wide table + sparkline list-column ---</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>tab_wide <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">as.character</span>(age_group)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, age_group, percent) <span class="sc">%&gt;%</span></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_group, <span class="at">values_from =</span> percent) <span class="sc">%&gt;%</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># order to match your plot (Unaffiliated at top, Don't know at bottom)</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">factor</span>(religion, <span class="at">levels =</span> <span class="fu">rev</span>(religion_levels_bottom_to_top))) <span class="sc">%&gt;%</span></span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># list-column used by gtExtras sparklines</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Trend =</span> <span class="fu">pmap</span>(<span class="fu">select</span>(., <span class="fu">all_of</span>(age_cols)), c)) <span class="sc">%&gt;%</span></span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put Trend right after the stub</span></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, Trend, <span class="fu">all_of</span>(age_cols))</span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Make the gt table (compact version) ---</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>gt_tbl <span class="ot">&lt;-</span> tab_wide <span class="sc">%&gt;%</span></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">rowname_col =</span> <span class="st">"religion"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**A generational shift in religious identity**"</span>),</span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Share of respondents by age group and religious affiliation"</span></span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
-<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">Trend  =</span> <span class="st">"Trend"</span>,</span>
-<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">18-29</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"18–29"</span>,</span>
-<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">30-49</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"30–49"</span>,</span>
-<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">50-64</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"50–64"</span>,</span>
-<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">+65</span><span class="st">`</span>   <span class="ot">=</span> <span class="st">"65+"</span></span>
-<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># smaller sparklines so the table doesn't balloon</span></span>
-<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt_plt_sparkline</span>(</span>
-<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">column =</span> Trend,</span>
-<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_limit =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig_dim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">12</span>)</span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">all_of</span>(age_cols), <span class="at">decimals =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subtle heatmap shading like your first table</span></span>
-<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_color</span>(</span>
-<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">all_of</span>(age_cols),</span>
-<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> scales<span class="sc">::</span><span class="fu">col_numeric</span>(</span>
-<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#f5f5f5"</span>, <span class="st">"#d9e4d1"</span>, <span class="st">"#557A2E"</span>),</span>
-<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain =</span> <span class="cn">NULL</span></span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
-<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
-<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>(<span class="fu">everything</span>())</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compact widths (stub is the religion names)</span></span>
-<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_width</span>(</span>
-<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stub</span>() <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">200</span>),</span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    Trend <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">85</span>),</span>
-<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>() <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">60</span>)</span>
-<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.width =</span> <span class="fu">pct</span>(<span class="dv">100</span>),</span>
-<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.names =</span> <span class="st">"Arial"</span>,</span>
-<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="dv">11</span>,</span>
-<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">2</span>),</span>
-<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.align =</span> <span class="st">"left"</span></span>
-<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="fu">md</span>(<span class="st">"Values are percentages; totals may not equal 100 due to rounding."</span>))</span>
-<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>gt_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>age_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"18-29"</span>, <span class="st">"30-49"</span>, <span class="st">"50-64"</span>, <span class="st">"+65"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Build wide table + sparkline list-column ---</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>tab_wide <span class="ot">&lt;-</span> df2 <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">age_group =</span> <span class="fu">as.character</span>(age_group)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, age_group, percent) <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> age_group, <span class="at">values_from =</span> percent) <span class="sc">%&gt;%</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># order to match your plot (Unaffiliated at top, Don't know at bottom)</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">factor</span>(religion, <span class="at">levels =</span> <span class="fu">rev</span>(religion_levels_bottom_to_top))) <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># list-column used by gtExtras sparklines</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Trend =</span> <span class="fu">pmap</span>(<span class="fu">select</span>(., <span class="fu">all_of</span>(age_cols)), c)) <span class="sc">%&gt;%</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># put Trend right after the stub</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(religion, Trend, <span class="fu">all_of</span>(age_cols))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="co"># --- Make the gt table (compact version) ---</span></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>gt_tbl <span class="ot">&lt;-</span> tab_wide <span class="sc">%&gt;%</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>(<span class="at">rowname_col =</span> <span class="st">"religion"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_header</span>(</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">md</span>(<span class="st">"**A generational shift in religious identity**"</span>),</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Share of respondents by age group and religious affiliation"</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">Trend  =</span> <span class="st">"Trend"</span>,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">18-29</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"18–29"</span>,</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">30-49</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"30–49"</span>,</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">50-64</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"50–64"</span>,</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">+65</span><span class="st">`</span>   <span class="ot">=</span> <span class="st">"65+"</span></span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># smaller sparklines so the table doesn't balloon</span></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt_plt_sparkline</span>(</span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">column =</span> Trend,</span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">same_limit =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">fig_dim =</span> <span class="fu">c</span>(<span class="dv">55</span>, <span class="dv">12</span>)</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">all_of</span>(age_cols), <span class="at">decimals =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># subtle heatmap shading like your first table</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data_color</span>(</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>    <span class="at">columns =</span> <span class="fu">all_of</span>(age_cols),</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">colors =</span> scales<span class="sc">::</span><span class="fu">col_numeric</span>(</span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a>      <span class="at">palette =</span> <span class="fu">c</span>(<span class="st">"#f5f5f5"</span>, <span class="st">"#d9e4d1"</span>, <span class="st">"#557A2E"</span>),</span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">domain =</span> <span class="cn">NULL</span></span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="fu">cell_text</span>(<span class="at">weight =</span> <span class="st">"bold"</span>),</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_column_labels</span>(<span class="fu">everything</span>())</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-48"><a href="#cb14-48" aria-hidden="true" tabindex="-1"></a>  <span class="co"># compact widths (stub is the religion names)</span></span>
+<span id="cb14-49"><a href="#cb14-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_width</span>(</span>
+<span id="cb14-50"><a href="#cb14-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stub</span>() <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">200</span>),</span>
+<span id="cb14-51"><a href="#cb14-51" aria-hidden="true" tabindex="-1"></a>    Trend <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">85</span>),</span>
+<span id="cb14-52"><a href="#cb14-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>() <span class="sc">~</span> <span class="fu">px</span>(<span class="dv">60</span>)</span>
+<span id="cb14-53"><a href="#cb14-53" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-54"><a href="#cb14-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_options</span>(</span>
+<span id="cb14-55"><a href="#cb14-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.width =</span> <span class="fu">pct</span>(<span class="dv">100</span>),</span>
+<span id="cb14-56"><a href="#cb14-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.names =</span> <span class="st">"Arial"</span>,</span>
+<span id="cb14-57"><a href="#cb14-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">table.font.size =</span> <span class="dv">11</span>,</span>
+<span id="cb14-58"><a href="#cb14-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">data_row.padding =</span> <span class="fu">px</span>(<span class="dv">2</span>),</span>
+<span id="cb14-59"><a href="#cb14-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">heading.align =</span> <span class="st">"left"</span></span>
+<span id="cb14-60"><a href="#cb14-60" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb14-61"><a href="#cb14-61" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_source_note</span>(<span class="fu">md</span>(<span class="st">"Values are percentages; totals may not equal 100 due to rounding."</span>))</span>
+<span id="cb14-62"><a href="#cb14-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-63"><a href="#cb14-63" aria-hidden="true" tabindex="-1"></a>gt_tbl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div id="xitzevsumw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#xitzevsumw table {
+<div id="xgeipqomrg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#xgeipqomrg table {
   font-family: Arial;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#xitzevsumw thead, #xitzevsumw tbody, #xitzevsumw tfoot, #xitzevsumw tr, #xitzevsumw td, #xitzevsumw th {
+#xgeipqomrg thead, #xgeipqomrg tbody, #xgeipqomrg tfoot, #xgeipqomrg tr, #xgeipqomrg td, #xgeipqomrg th {
   border-style: none;
 }
 
-#xitzevsumw p {
+#xgeipqomrg p {
   margin: 0;
   padding: 0;
 }
 
-#xitzevsumw .gt_table {
+#xgeipqomrg .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -1288,12 +1288,12 @@ This warning is displayed once every 8 hours.</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_caption {
+#xgeipqomrg .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#xitzevsumw .gt_title {
+#xgeipqomrg .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1305,7 +1305,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-width: 0;
 }
 
-#xitzevsumw .gt_subtitle {
+#xgeipqomrg .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1317,7 +1317,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-top-width: 0;
 }
 
-#xitzevsumw .gt_heading {
+#xgeipqomrg .gt_heading {
   background-color: #FFFFFF;
   text-align: left;
   border-bottom-color: #FFFFFF;
@@ -1329,13 +1329,13 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_bottom_border {
+#xgeipqomrg .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_col_headings {
+#xgeipqomrg .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1350,7 +1350,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_col_heading {
+#xgeipqomrg .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1370,7 +1370,7 @@ This warning is displayed once every 8 hours.</code></pre>
   overflow-x: hidden;
 }
 
-#xitzevsumw .gt_column_spanner_outer {
+#xgeipqomrg .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1382,15 +1382,15 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 4px;
 }
 
-#xitzevsumw .gt_column_spanner_outer:first-child {
+#xgeipqomrg .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#xitzevsumw .gt_column_spanner_outer:last-child {
+#xgeipqomrg .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#xitzevsumw .gt_column_spanner {
+#xgeipqomrg .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1402,11 +1402,11 @@ This warning is displayed once every 8 hours.</code></pre>
   width: 100%;
 }
 
-#xitzevsumw .gt_spanner_row {
+#xgeipqomrg .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#xitzevsumw .gt_group_heading {
+#xgeipqomrg .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1432,7 +1432,7 @@ This warning is displayed once every 8 hours.</code></pre>
   text-align: left;
 }
 
-#xitzevsumw .gt_empty_group_heading {
+#xgeipqomrg .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1447,15 +1447,15 @@ This warning is displayed once every 8 hours.</code></pre>
   vertical-align: middle;
 }
 
-#xitzevsumw .gt_from_md > :first-child {
+#xgeipqomrg .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#xitzevsumw .gt_from_md > :last-child {
+#xgeipqomrg .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#xitzevsumw .gt_row {
+#xgeipqomrg .gt_row {
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 5px;
@@ -1474,7 +1474,7 @@ This warning is displayed once every 8 hours.</code></pre>
   overflow-x: hidden;
 }
 
-#xitzevsumw .gt_stub {
+#xgeipqomrg .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1487,7 +1487,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#xitzevsumw .gt_stub_row_group {
+#xgeipqomrg .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1501,15 +1501,15 @@ This warning is displayed once every 8 hours.</code></pre>
   vertical-align: top;
 }
 
-#xitzevsumw .gt_row_group_first td {
+#xgeipqomrg .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#xitzevsumw .gt_row_group_first th {
+#xgeipqomrg .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#xitzevsumw .gt_summary_row {
+#xgeipqomrg .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1519,16 +1519,16 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#xitzevsumw .gt_first_summary_row {
+#xgeipqomrg .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_first_summary_row.thick {
+#xgeipqomrg .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#xitzevsumw .gt_last_summary_row {
+#xgeipqomrg .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1538,7 +1538,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_grand_summary_row {
+#xgeipqomrg .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1548,7 +1548,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#xitzevsumw .gt_first_grand_summary_row {
+#xgeipqomrg .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1558,7 +1558,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_last_grand_summary_row_top {
+#xgeipqomrg .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1568,11 +1568,11 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_striped {
+#xgeipqomrg .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#xitzevsumw .gt_table_body {
+#xgeipqomrg .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1581,7 +1581,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_footnotes {
+#xgeipqomrg .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1595,7 +1595,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_footnote {
+#xgeipqomrg .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -1604,7 +1604,7 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#xitzevsumw .gt_sourcenotes {
+#xgeipqomrg .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1618,7 +1618,7 @@ This warning is displayed once every 8 hours.</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#xitzevsumw .gt_sourcenote {
+#xgeipqomrg .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1626,64 +1626,73 @@ This warning is displayed once every 8 hours.</code></pre>
   padding-right: 5px;
 }
 
-#xitzevsumw .gt_left {
+#xgeipqomrg .gt_left {
   text-align: left;
 }
 
-#xitzevsumw .gt_center {
+#xgeipqomrg .gt_center {
   text-align: center;
 }
 
-#xitzevsumw .gt_right {
+#xgeipqomrg .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#xitzevsumw .gt_font_normal {
+#xgeipqomrg .gt_font_normal {
   font-weight: normal;
 }
 
-#xitzevsumw .gt_font_bold {
+#xgeipqomrg .gt_font_bold {
   font-weight: bold;
 }
 
-#xitzevsumw .gt_font_italic {
+#xgeipqomrg .gt_font_italic {
   font-style: italic;
 }
 
-#xitzevsumw .gt_super {
+#xgeipqomrg .gt_super {
   font-size: 65%;
 }
 
-#xitzevsumw .gt_footnote_marks {
+#xgeipqomrg .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#xitzevsumw .gt_asterisk {
+#xgeipqomrg .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#xitzevsumw .gt_indent_1 {
+#xgeipqomrg .gt_indent_1 {
   text-indent: 5px;
 }
 
-#xitzevsumw .gt_indent_2 {
+#xgeipqomrg .gt_indent_2 {
   text-indent: 10px;
 }
 
-#xitzevsumw .gt_indent_3 {
+#xgeipqomrg .gt_indent_3 {
   text-indent: 15px;
 }
 
-#xitzevsumw .gt_indent_4 {
+#xgeipqomrg .gt_indent_4 {
   text-indent: 20px;
 }
 
-#xitzevsumw .gt_indent_5 {
+#xgeipqomrg .gt_indent_5 {
   text-indent: 25px;
+}
+
+#xgeipqomrg .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#xgeipqomrg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
 }
 </style>
 
@@ -1696,21 +1705,21 @@ This warning is displayed once every 8 hours.</code></pre>
 <td colspan="6" class="gt_heading gt_subtitle gt_font_normal gt_bottom_border">Share of respondents by age group and religious affiliation</td>
 </tr>
 <tr class="gt_col_headings header">
-<th class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
+<th id="a::stub" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col"></th>
 <th id="Trend" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">Trend</th>
-<th id="18–29" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">18–29</th>
-<th id="30–49" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">30–49</th>
-<th id="50–64" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">50–64</th>
-<th id="65+" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">65+</th>
+<th id="a18-29" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">18–29</th>
+<th id="a30-49" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">30–49</th>
+<th id="a50-64" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">50–64</th>
+<th id="a+65" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" style="font-weight: bold" scope="col">65+</th>
 </tr>
 </thead>
 <tbody class="gt_table_body">
 <tr class="odd">
 <th id="stub_1_1" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Unaffiliated</th>
-<td class="gt_row gt_center" headers="stub_1_1 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="102.99" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="13.65px" lengthadjust="spacingAndGlyphs">12.0</text><polyline points="6.43,20.21 12.94,57.66 19.45,82.63 25.96,101.36 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="101.36" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="101.36" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="20.21" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_1 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="103.40" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="11.05px" lengthadjust="spacingAndGlyphs">12.0</text><polyline points="6.43,20.21 12.94,57.66 19.45,82.63 25.96,101.36 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="101.36" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="101.36" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="20.21" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_1 18-29" style="background-color: #557A2E; color: #FFFFFF">38</td>
 <td class="gt_row gt_right" headers="stub_1_1 30-49" style="background-color: #557A2E; color: #FFFFFF">26</td>
@@ -1719,10 +1728,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_2" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Other religion</th>
-<td class="gt_row gt_center" headers="stub_1_2 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="137.32" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,135.70 12.94,135.70 19.45,135.70 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_2 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="137.74" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,135.70 12.94,135.70 19.45,135.70 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_2 18-29" style="background-color: #F5F5F5; color: #000000">1</td>
 <td class="gt_row gt_right" headers="stub_1_2 30-49" style="background-color: #F5F5F5; color: #000000">1</td>
@@ -1731,10 +1740,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_3" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Other world Religion</th>
-<td class="gt_row gt_center" headers="stub_1_3 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="137.32" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,126.33 12.94,129.46 19.45,135.70 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="126.33" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_3 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="137.74" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,126.33 12.94,129.46 19.45,135.70 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="19.45" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="126.33" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_3 18-29" style="background-color: #F0F2EF; color: #000000">4</td>
 <td class="gt_row gt_right" headers="stub_1_3 30-49" style="background-color: #F1F2EF; color: #000000">3</td>
@@ -1743,10 +1752,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_4" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Jewish</th>
-<td class="gt_row gt_center" headers="stub_1_4 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="134.20" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">2.0</text><polyline points="6.43,135.70 12.94,135.70 19.45,132.58 25.96,132.58 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_4 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="134.62" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">2.0</text><polyline points="6.43,135.70 12.94,135.70 19.45,132.58 25.96,132.58 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_4 18-29" style="background-color: #F5F5F5; color: #000000">1</td>
 <td class="gt_row gt_right" headers="stub_1_4 30-49" style="background-color: #F5F5F5; color: #000000">1</td>
@@ -1755,10 +1764,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_5" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Other Christian</th>
-<td class="gt_row gt_center" headers="stub_1_5 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="124.84" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">5.0</text><polyline points="6.43,116.97 12.94,120.09 19.45,120.09 25.96,123.21 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="123.21" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="123.21" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_5 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="125.25" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">5.0</text><polyline points="6.43,116.97 12.94,120.09 19.45,120.09 25.96,123.21 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="123.21" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="123.21" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_5 18-29" style="background-color: #ECEFE9; color: #000000">7</td>
 <td class="gt_row gt_right" headers="stub_1_5 30-49" style="background-color: #EAEEE7; color: #000000">6</td>
@@ -1767,10 +1776,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_6" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Hispanic Catholic</th>
-<td class="gt_row gt_center" headers="stub_1_6 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="127.96" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">4.0</text><polyline points="6.43,110.73 12.94,107.61 19.45,120.09 25.96,126.33 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="126.33" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="126.33" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="107.61" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_6 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="128.37" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">4.0</text><polyline points="6.43,110.73 12.94,107.61 19.45,120.09 25.96,126.33 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="126.33" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="126.33" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="107.61" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_6 18-29" style="background-color: #E9EEE5; color: #000000">9</td>
 <td class="gt_row gt_right" headers="stub_1_6 30-49" style="background-color: #E1E9DB; color: #000000">10</td>
@@ -1779,10 +1788,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_7" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Hispanic Protestant</th>
-<td class="gt_row gt_center" headers="stub_1_7 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="137.32" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,120.09 12.94,123.21 19.45,132.58 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="120.09" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_7 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="137.74" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">1.0</text><polyline points="6.43,120.09 12.94,123.21 19.45,132.58 25.96,135.70 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="25.96" cy="135.70" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="120.09" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_7 18-29" style="background-color: #EDF0EB; color: #000000">6</td>
 <td class="gt_row gt_right" headers="stub_1_7 30-49" style="background-color: #ECF0E9; color: #000000">5</td>
@@ -1791,10 +1800,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_8" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Black Protestant</th>
-<td class="gt_row gt_center" headers="stub_1_8 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="118.59" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">7.0</text><polyline points="6.43,116.97 12.94,113.85 19.45,110.73 25.96,116.97 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="116.97" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="110.73" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_8 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="119.01" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">7.0</text><polyline points="6.43,116.97 12.94,113.85 19.45,110.73 25.96,116.97 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="116.97" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="116.97" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="110.73" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_8 18-29" style="background-color: #ECEFE9; color: #000000">7</td>
 <td class="gt_row gt_right" headers="stub_1_8 30-49" style="background-color: #E5EBE1; color: #000000">8</td>
@@ -1803,10 +1812,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_9" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Mormon</th>
-<td class="gt_row gt_center" headers="stub_1_9 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="134.20" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">2.0</text><polyline points="6.43,132.58 12.94,132.58 19.45,132.58 25.96,132.58 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_9 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="134.62" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">2.0</text><polyline points="6.43,132.58 12.94,132.58 19.45,132.58 25.96,132.58 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="132.58" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_9 18-29" style="background-color: #F3F4F3; color: #000000">2</td>
 <td class="gt_row gt_right" headers="stub_1_9 30-49" style="background-color: #F3F4F2; color: #000000">2</td>
@@ -1815,10 +1824,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_10" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">White Catholic</th>
-<td class="gt_row gt_center" headers="stub_1_10 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="90.50" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="13.65px" lengthadjust="spacingAndGlyphs">16.0</text><polyline points="6.43,120.09 12.94,110.73 19.45,92.00 25.96,88.88 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="88.88" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="120.09" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="88.88" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_10 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="90.92" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="11.05px" lengthadjust="spacingAndGlyphs">16.0</text><polyline points="6.43,120.09 12.94,110.73 19.45,92.00 25.96,88.88 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="88.88" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="120.09" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="88.88" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_10 18-29" style="background-color: #EDF0EB; color: #000000">6</td>
 <td class="gt_row gt_right" headers="stub_1_10 30-49" style="background-color: #E3EADE; color: #000000">9</td>
@@ -1827,10 +1836,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_11" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">White mainline Protestant</th>
-<td class="gt_row gt_center" headers="stub_1_11 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="81.14" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="13.65px" lengthadjust="spacingAndGlyphs">19.0</text><polyline points="6.43,113.85 12.94,104.48 19.45,92.00 25.96,79.51 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="79.51" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="113.85" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="79.51" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_11 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="81.55" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="11.05px" lengthadjust="spacingAndGlyphs">19.0</text><polyline points="6.43,113.85 12.94,104.48 19.45,92.00 25.96,79.51 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="79.51" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="113.85" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="79.51" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_11 18-29" style="background-color: #EAEFE7; color: #000000">8</td>
 <td class="gt_row gt_right" headers="stub_1_11 30-49" style="background-color: #DFE7D8; color: #000000">11</td>
@@ -1839,10 +1848,10 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="even">
 <th id="stub_1_12" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">White evangelical Protestant</th>
-<td class="gt_row gt_center" headers="stub_1_12 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="59.29" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="13.65px" lengthadjust="spacingAndGlyphs">26.0</text><polyline points="6.43,113.85 12.94,95.12 19.45,73.27 25.96,57.66 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="57.66" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="113.85" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="57.66" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_12 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="59.70" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="11.05px" lengthadjust="spacingAndGlyphs">26.0</text><polyline points="6.43,113.85 12.94,95.12 19.45,73.27 25.96,57.66 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="57.66" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="113.85" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="57.66" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_12 18-29" style="background-color: #EAEFE7; color: #000000">8</td>
 <td class="gt_row gt_right" headers="stub_1_12 30-49" style="background-color: #D4E0CA; color: #000000">14</td>
@@ -1851,18 +1860,18 @@ This warning is displayed once every 8 hours.</code></pre>
 </tr>
 <tr class="odd">
 <th id="stub_1_13" class="gt_row gt_center gt_stub" data-quarto-table-cell-role="th" scope="row">Don't know</th>
-<td class="gt_row gt_center" headers="stub_1_13 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" class="svglite" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
-<defs>
-<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }  </style>
-</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><text x="27.26" y="131.08" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="10.24px" lengthadjust="spacingAndGlyphs">3.0</text><polyline points="6.43,129.46 12.94,129.46 19.45,129.46 25.96,129.46 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g>
+<td class="gt_row gt_center" headers="stub_1_13 Trend"><svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="34.02pt" height="155.91pt" viewbox="0 0 34.02 155.91">
+<g class="svglite"><defs>
+<style type="text/css">    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {      fill: none;      stroke: #000000;      stroke-linecap: round;      stroke-linejoin: round;      stroke-miterlimit: 10.00;    }    .svglite text {      white-space: pre;    }    .svglite g.glyphgroup path {      fill: inherit;      stroke: none;    }  </style>
+</defs><rect width="100%" height="100%" style="stroke: none; fill: none;"></rect><defs> <clippath id="cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ=="> <rect x="0.00" y="0.00" width="34.02" height="155.91"></rect> </clippath></defs><g clip-path="url(#cpMC4wMHwzNC4wMnwwLjAwfDE1NS45MQ==)"><rect x="0.00" y="0.00" width="34.02" height="155.91" style="stroke-width: 0.00; stroke: none;"></rect><text x="27.26" y="131.49" style="font-size: 5.69px; font-family: &quot;Arial&quot;;" textlength="7.89px" lengthadjust="spacingAndGlyphs">3.0</text><polyline points="6.43,129.46 12.94,129.46 19.45,129.46 25.96,129.46 " style="stroke-width: 1.07; stroke-linecap: butt;"></polyline><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; fill: #000000;"></circle><circle cx="6.43" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="12.94" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="19.45" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #A020F0; fill: #A020F0;"></circle><circle cx="6.43" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="12.94" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="19.45" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle><circle cx="25.96" cy="129.46" r="0.89" style="stroke-width: 0.71; stroke: #00FF00; fill: #00FF00;"></circle></g></g>
 </svg></td>
 <td class="gt_row gt_right" headers="stub_1_13 18-29" style="background-color: #F2F3F1; color: #000000">3</td>
 <td class="gt_row gt_right" headers="stub_1_13 30-49" style="background-color: #F1F2EF; color: #000000">3</td>
 <td class="gt_row gt_right" headers="stub_1_13 50-64" style="background-color: #EFF2EE; color: #000000">3</td>
 <td class="gt_row gt_right" headers="stub_1_13 +65" style="background-color: #F1F2EF; color: #000000">3</td>
 </tr>
-</tbody><tfoot class="gt_sourcenotes">
-<tr class="odd">
+</tbody><tfoot>
+<tr class="gt_sourcenotes odd">
 <td colspan="6" class="gt_sourcenote">Values are percentages; totals may not equal 100 due to rounding.</td>
 </tr>
 </tfoot>
