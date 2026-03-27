@@ -336,3 +336,99 @@ collect_metrics(cv_fit3)
 collect_metrics(cv_fit4)
 ```
 
+# This section added by Talia C. Swanson
+
+## Observed vs Predicted for all 3 
+
+```{r}
+# Predictions from the original models
+pred_null <- predict(null_fit, new_data = train_data)$.pred
+pred_dose <- predict(lm_fit_10.1, new_data = train_data)$.pred
+pred_all  <- predict(lm_fit_10.2, new_data = train_data)$.pred
+
+# Combine into long format for plotting
+pred_df <- tibble(
+  ID = train_data$ID,
+  Observed = train_data$Y,
+  Null = pred_null,
+  Dose = pred_dose,
+  All = pred_all
+) %>%
+  pivot_longer(cols = c("Null", "Dose", "All"),
+    names_to = "Model",
+    values_to = "Predicted")
+
+# Plot of Observed vs Predicted
+ggplot(pred_df, aes(x = Observed, y = Predicted, color = Model, shape = Model)) +
+  geom_point(size = 2, alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  coord_cartesian(xlim = c(0,5000), ylim = c(0,5000)) +
+  theme_bw() +
+  labs(title = "Observed vs Predicted Values",
+    x = "Observed Y",
+    y = "Predicted Y")
+```
+
+The observed vs predicted plot shows how close the model predictions are to the actual values of Y. Ideally, the points should fall along the dashed 45-degree line, which represents perfect predictions. The null model predicts nearly the same value for all observations and does not match the observed data well. The dose-only model performs slightly better but still shows noticeable differences from the observed values. The model with all predictors follows the reference line more closely, suggesting it provides the best predictions among the three models.
+
+## Residual Plot for the All-Predictors Model
+```{r}
+# Residuals for all-predictors model
+resid_all <- train_data$Y - pred_all
+resid_df <- tibble(
+  Observed = train_data$Y,
+  Residuals = resid_all
+)
+
+ggplot(resid_df, aes(x = Observed, y = Residuals)) +
+  geom_point(alpha = 0.6) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_cartesian(ylim = c(-max(abs(resid_all)), max(abs(resid_all)))) +
+  theme_bw() +
+  labs(title = "Residuals vs Observed Values (All Predictors Model)",
+    x = "Observed Y",
+    y = "Residuals")
+```
+
+The residual plot shows the difference between the observed and predicted values. Ideally, the residuals should be randomly scattered around zero. In this plot, the residuals are mostly centered around zero, but they appear to spread out more as the observed values increase. This suggests that the model predicts smaller values better than larger values, and some variation in the data is still not explained by the model.
+
+## Bootstrap Prediction and Uncertainty 
+```{r}
+# reset seed for reproducibility 
+set.seed(rngseed) 
+
+# To create 100 bootstrap resamples
+boot_splits <- bootstraps(train_data, times = 100)
+
+# Fit model on each bootstrap and predict on the original training data
+pred_bs <- map(1:100, function(i){
+  bs_data <- analysis(boot_splits$splits[[i]])
+  bs_fit <- lm_mod %>% fit(Y ~ ., data = bs_data)
+  predict(bs_fit, new_data = train_data)$.pred
+}) %>% do.call(cbind, .)
+
+# Compute median and 89% CI for predictions
+preds_ci <- apply (pred_bs, 1, quantile, probs = c(0.055, 0.5, 0.945)) |> t() |> as_tibble()
+names(preds_ci) <- c("Lower", "Median", "Upper")
+
+# Combine with original predicted values
+pred_plot_df <- tibble(
+  Observed = train_data$Y,
+  Original = pred_all
+) %>%
+  bind_cols(preds_ci)
+
+# Plot predictions with bootstrap uncertainty
+ggplot(pred_plot_df, aes(x = Observed)) +
+  geom_point(aes(y = Original), color = "black", size = 2, alpha = 0.6) +
+  geom_point(aes(y = Median), color = "blue", size = 2, alpha = 0.6) +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.3, color = "blue", alpha = 0.5) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  coord_cartesian(xlim = c(0,5000), ylim = c(0,5000)) +
+  theme_bw() +
+  labs(title = "Model 2 Predictions with Bootstrap Uncertainty",
+    x = "Observed Y",
+    y = "Predicted Y")
+```
+
+This plot shows the predictions from the full model along with bootstrap uncertainty. Most points fall near the dashed line, which means the model predictions are generally close to the observed values. However, there is still some spread around the line, showing that the model does not perfectly predict all observations. The bootstrap results show that there is some uncertainty in the model’s predictions.
