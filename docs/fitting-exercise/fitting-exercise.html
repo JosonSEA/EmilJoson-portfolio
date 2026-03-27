@@ -209,23 +209,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co">#for plots</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot) <span class="co">#for correlation plot</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels) <span class="co">#for model fitting</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#raw file URL</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/metrumresearchgroup/BayesPBPK-tutorial/master/data/Mavoglurant_A2121_nmpk.csv"</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#download file</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">destfile =</span> <span class="st">"fitting-exercise/Mavoglurant_A2121_nmpk.csv"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#data path</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>data_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"fitting-exercise"</span>, <span class="st">"Mavoglurant_A2121_nmpk.csv"</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#load data</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(data_path))</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#explore the data</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble) <span class="co">#for data wrangling</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#raw file URL</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/metrumresearchgroup/BayesPBPK-tutorial/master/data/Mavoglurant_A2121_nmpk.csv"</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#download file</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(url,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">destfile =</span> <span class="st">"fitting-exercise/Mavoglurant_A2121_nmpk.csv"</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">mode =</span> <span class="st">"wb"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#data path</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>data_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"fitting-exercise"</span>, <span class="st">"Mavoglurant_A2121_nmpk.csv"</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#load data</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">here</span>(data_path))</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#explore the data</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   2678 obs. of  17 variables:
  $ ID  : int  793 793 793 793 793 793 793 793 793 793 ...
@@ -868,8 +869,184 @@ Coefficients:
 1 rmse    standard    649.    10    54.4 pre0_mod0_post0</code></pre>
 </div>
 </div>
+<section id="this-section-added-by-talia-c.-swanson" class="level1">
+<h1>This section added by Talia C. Swanson</h1>
+<section id="observed-vs-predicted-for-all-3" class="level2">
+<h2 class="anchored" data-anchor-id="observed-vs-predicted-for-all-3">Observed vs Predicted for all 3</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions from the original models</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>pred_null <span class="ot">&lt;-</span> <span class="fu">predict</span>(null_fit, <span class="at">new_data =</span> train_data)<span class="sc">$</span>.pred</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>pred_dose <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_fit_10<span class="fl">.1</span>, <span class="at">new_data =</span> train_data)<span class="sc">$</span>.pred</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>pred_all  <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_fit_10<span class="fl">.2</span>, <span class="at">new_data =</span> train_data)<span class="sc">$</span>.pred</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine into long format for plotting</span></span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>pred_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ID =</span> train_data<span class="sc">$</span>ID,</span>
+<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed =</span> train_data<span class="sc">$</span>Y,</span>
+<span id="cb77-10"><a href="#cb77-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Null =</span> pred_null,</span>
+<span id="cb77-11"><a href="#cb77-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dose =</span> pred_dose,</span>
+<span id="cb77-12"><a href="#cb77-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">All =</span> pred_all</span>
+<span id="cb77-13"><a href="#cb77-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb77-14"><a href="#cb77-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="st">"Null"</span>, <span class="st">"Dose"</span>, <span class="st">"All"</span>),</span>
+<span id="cb77-15"><a href="#cb77-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"Model"</span>,</span>
+<span id="cb77-16"><a href="#cb77-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"Predicted"</span>)</span>
+<span id="cb77-17"><a href="#cb77-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb77-18"><a href="#cb77-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of Observed vs Predicted</span></span>
+<span id="cb77-19"><a href="#cb77-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_df, <span class="fu">aes</span>(<span class="at">x =</span> Observed, <span class="at">y =</span> Predicted, <span class="at">color =</span> Model, <span class="at">shape =</span> Model)) <span class="sc">+</span></span>
+<span id="cb77-20"><a href="#cb77-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb77-21"><a href="#cb77-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb77-22"><a href="#cb77-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>)) <span class="sc">+</span></span>
+<span id="cb77-23"><a href="#cb77-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb77-24"><a href="#cb77-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Observed vs Predicted Values"</span>,</span>
+<span id="cb77-25"><a href="#cb77-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observed Y"</span>,</span>
+<span id="cb77-26"><a href="#cb77-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted Y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fitting-exercise_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The observed vs predicted plot shows how close the model predictions are to the actual values of Y. Ideally, the points should fall along the dashed 45-degree line, which represents perfect predictions. The null model predicts nearly the same value for all observations and does not match the observed data well. The dose-only model performs slightly better but still shows noticeable differences from the observed values. The model with all predictors follows the reference line more closely, suggesting it provides the best predictions among the three models.</p>
+</section>
+<section id="residual-plot-for-the-all-predictors-model" class="level2">
+<h2 class="anchored" data-anchor-id="residual-plot-for-the-all-predictors-model">Residual Plot for the All-Predictors Model</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Residuals for all-predictors model</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>resid_all <span class="ot">&lt;-</span> train_data<span class="sc">$</span>Y <span class="sc">-</span> pred_all</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>resid_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed =</span> train_data<span class="sc">$</span>Y,</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Residuals =</span> resid_all</span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(resid_df, <span class="fu">aes</span>(<span class="at">x =</span> Observed, <span class="at">y =</span> Residuals)) <span class="sc">+</span></span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">max</span>(<span class="fu">abs</span>(resid_all)), <span class="fu">max</span>(<span class="fu">abs</span>(resid_all)))) <span class="sc">+</span></span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Residuals vs Observed Values (All Predictors Model)"</span>,</span>
+<span id="cb78-14"><a href="#cb78-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observed Y"</span>,</span>
+<span id="cb78-15"><a href="#cb78-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fitting-exercise_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The residual plot shows the difference between the observed and predicted values. Ideally, the residuals should be randomly scattered around zero. In this plot, the residuals are mostly centered around zero, but they appear to spread out more as the observed values increase. This suggests that the model predicts smaller values better than larger values, and some variation in the data is still not explained by the model.</p>
+</section>
+<section id="bootstrap-prediction-and-uncertainty" class="level2">
+<h2 class="anchored" data-anchor-id="bootstrap-prediction-and-uncertainty">Bootstrap Prediction and Uncertainty</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># reset seed for reproducibility </span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(rngseed) </span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="co"># To create 100 bootstrap resamples</span></span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>boot_splits <span class="ot">&lt;-</span> <span class="fu">bootstraps</span>(train_data, <span class="at">times =</span> <span class="dv">100</span>)</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model on each bootstrap and predict on the original training data</span></span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>pred_bs <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>, <span class="cf">function</span>(i){</span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>  bs_data <span class="ot">&lt;-</span> <span class="fu">analysis</span>(boot_splits<span class="sc">$</span>splits[[i]])</span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>  bs_fit <span class="ot">&lt;-</span> lm_mod <span class="sc">%&gt;%</span> <span class="fu">fit</span>(Y <span class="sc">~</span> ., <span class="at">data =</span> bs_data)</span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(bs_fit, <span class="at">new_data =</span> train_data)<span class="sc">$</span>.pred</span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> <span class="fu">do.call</span>(cbind, .)</span>
+<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute median and 89% CI for predictions</span></span>
+<span id="cb79-15"><a href="#cb79-15" aria-hidden="true" tabindex="-1"></a>preds_ci <span class="ot">&lt;-</span> <span class="fu">apply</span> (pred_bs, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.055</span>, <span class="fl">0.5</span>, <span class="fl">0.945</span>)) <span class="sc">|&gt;</span> <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb79-16"><a href="#cb79-16" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(preds_ci) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Lower"</span>, <span class="st">"Median"</span>, <span class="st">"Upper"</span>)</span>
+<span id="cb79-17"><a href="#cb79-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-18"><a href="#cb79-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine with original predicted values</span></span>
+<span id="cb79-19"><a href="#cb79-19" aria-hidden="true" tabindex="-1"></a>pred_plot_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb79-20"><a href="#cb79-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed =</span> train_data<span class="sc">$</span>Y,</span>
+<span id="cb79-21"><a href="#cb79-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">Original =</span> pred_all</span>
+<span id="cb79-22"><a href="#cb79-22" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb79-23"><a href="#cb79-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(preds_ci)</span>
+<span id="cb79-24"><a href="#cb79-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-25"><a href="#cb79-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot predictions with bootstrap uncertainty</span></span>
+<span id="cb79-26"><a href="#cb79-26" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(pred_plot_df, <span class="fu">aes</span>(<span class="at">x =</span> Observed)) <span class="sc">+</span></span>
+<span id="cb79-27"><a href="#cb79-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> Original), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb79-28"><a href="#cb79-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> Median), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb79-29"><a href="#cb79-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Lower, <span class="at">ymax =</span> Upper), <span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb79-30"><a href="#cb79-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb79-31"><a href="#cb79-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>)) <span class="sc">+</span></span>
+<span id="cb79-32"><a href="#cb79-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb79-33"><a href="#cb79-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Model 2 Predictions with Bootstrap Uncertainty"</span>,</span>
+<span id="cb79-34"><a href="#cb79-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observed Y"</span>,</span>
+<span id="cb79-35"><a href="#cb79-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted Y"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fitting-exercise_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This plot shows the predictions from the full model along with bootstrap uncertainty. Most points fall near the dashed line, which means the model predictions are generally close to the observed values. However, there is still some spread around the line, showing that the model does not perfectly predict all observations. The bootstrap results show that there is some uncertainty in the model’s predictions.</p>
+</section>
+<section id="part-3" class="level2">
+<h2 class="anchored" data-anchor-id="part-3">Part 3</h2>
+</section>
+<section id="final-evaluation-using-test-data" class="level2">
+<h2 class="anchored" data-anchor-id="final-evaluation-using-test-data">Final Evaluation Using Test Data</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions for training data (already computed earlier as pred_all)</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>train_eval <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed =</span> train_data<span class="sc">$</span>Y,</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted =</span> pred_all,</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dataset =</span> <span class="st">"Training"</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions for test data using the SAME trained model (lm_fit_10.2)</span></span>
+<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>test_pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(lm_fit_10<span class="fl">.2</span>, <span class="at">new_data =</span> test_data)<span class="sc">$</span>.pred</span>
+<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>test_eval <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb80-12"><a href="#cb80-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed =</span> test_data<span class="sc">$</span>Y,</span>
+<span id="cb80-13"><a href="#cb80-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted =</span> test_pred,</span>
+<span id="cb80-14"><a href="#cb80-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dataset =</span> <span class="st">"Test"</span></span>
+<span id="cb80-15"><a href="#cb80-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-16"><a href="#cb80-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-17"><a href="#cb80-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine training and test data</span></span>
+<span id="cb80-18"><a href="#cb80-18" aria-hidden="true" tabindex="-1"></a>eval_df <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(train_eval, test_eval)</span>
+<span id="cb80-19"><a href="#cb80-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-20"><a href="#cb80-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot observed vs predicted for BOTH datasets</span></span>
+<span id="cb80-21"><a href="#cb80-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(eval_df, <span class="fu">aes</span>(<span class="at">x =</span> Observed, <span class="at">y =</span> Predicted, <span class="at">color =</span> Dataset, <span class="at">shape =</span> Dataset)) <span class="sc">+</span></span>
+<span id="cb80-22"><a href="#cb80-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb80-23"><a href="#cb80-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb80-24"><a href="#cb80-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">5000</span>)) <span class="sc">+</span></span>
+<span id="cb80-25"><a href="#cb80-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb80-26"><a href="#cb80-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb80-27"><a href="#cb80-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Observed vs Predicted (Training vs Test Data)"</span>,</span>
+<span id="cb80-28"><a href="#cb80-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Observed Y"</span>,</span>
+<span id="cb80-29"><a href="#cb80-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Predicted Y"</span></span>
+<span id="cb80-30"><a href="#cb80-30" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="fitting-exercise_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot shows predicted versus observed values for both the training and test data. The test data points are generally mixed in with the training data points and follow a similar pattern relative to the 45-degree reference line. This suggests that the model generalizes reasonably well to new data and is not strongly overfitting the training data. While there is still noticeable scatter, especially at higher values, the overall agreement between predicted and observed values is similar for both datasets.</p>
+</section>
+<section id="did-our-models-perform-better-than-the-null-model" class="level2">
+<h2 class="anchored" data-anchor-id="did-our-models-perform-better-than-the-null-model">Did our models perform better than the null model?</h2>
+<p>Yes, both of the actual models did better than the null. The difference is clear when you look at the RMSE values. The null model has an RMSE of about 948, while Model 1 drops that to around 703, and Model 2 reduces it further to about 627. This improvement happens because the null model ignores all predictors and simply assigns the same average value to everyone. In contrast, Model 1 and Model 2 use actual information from the data to adjust predictions. As a result, they are able to capture real variation in the outcome, which leads to smaller prediction errors.</p>
+</section>
+<section id="does-model-1-with-only-dose-in-the-model-improve-results-over-the-null-model-do-the-results-make-sense-would-you-consider-this-model-usable-for-any-real-purpose" class="level2">
+<h2 class="anchored" data-anchor-id="does-model-1-with-only-dose-in-the-model-improve-results-over-the-null-model-do-the-results-make-sense-would-you-consider-this-model-usable-for-any-real-purpose">Does model 1 with only dose in the model improve results over the null model? Do the results make sense? Would you consider this model “usable” for any real purpose?</h2>
+<p>Model 1 clearly improves over the null model, as shown by the drop in RMSE from 948 to 703. This makes sense because dose is strongly related to drug exposure, so even a simple model using only dose captures a large portion of the signal in the data. However, the model is still quite limited. Since dose only takes a few distinct values, the model produces only a few predicted values, which show up as horizontal lines in the prediction plot. That means everyone with the same dose gets the same prediction, even though individuals still vary quite a bit. Because of this, while Model 1 is useful for understanding the general trend, it would not be very reliable for making real-world predictions.</p>
+</section>
+<section id="does-model-2-with-all-predictors-further-improve-results-do-the-results-make-sense-would-you-consider-this-model-usable-for-any-real-purpose" class="level2">
+<h2 class="anchored" data-anchor-id="does-model-2-with-all-predictors-further-improve-results-do-the-results-make-sense-would-you-consider-this-model-usable-for-any-real-purpose">Does model 2 with all predictors further improve results? Do the results make sense? Would you consider this model “usable” for any real purpose?</h2>
+<p>Model 2 improves performance further, reducing the RMSE from 703 to 627, which shows that adding variables like age, sex, weight, and height helps explain additional variability in the outcome. The predictions also align more closely with the observed values compared to Model 1. That said, the improvement is more modest compared to the jump from the null model to Model 1. This suggests that while these additional predictors do help, dose is still the main driver of the outcome. There are also signs that the model is not fully capturing the data, such as the tendency to underestimate higher values. So while Model 2 is the best of the models tested and more usable than Model 1, it still has limitations and could likely be improved.</p>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

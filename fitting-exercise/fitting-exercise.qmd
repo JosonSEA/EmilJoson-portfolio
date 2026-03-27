@@ -11,6 +11,7 @@ library(tidyverse) #for data wrangling
 library(ggplot2) #for plots
 library(corrplot) #for correlation plot
 library(tidymodels) #for model fitting
+library(tibble) #for data wrangling
 
 #raw file URL
 url <- "https://raw.githubusercontent.com/metrumresearchgroup/BayesPBPK-tutorial/master/data/Mavoglurant_A2121_nmpk.csv"
@@ -432,3 +433,53 @@ ggplot(pred_plot_df, aes(x = Observed)) +
 ```
 
 This plot shows the predictions from the full model along with bootstrap uncertainty. Most points fall near the dashed line, which means the model predictions are generally close to the observed values. However, there is still some spread around the line, showing that the model does not perfectly predict all observations. The bootstrap results show that there is some uncertainty in the model’s predictions.
+
+## Part 3 
+## Final Evaluation Using Test Data
+
+```{r}
+# Predictions for training data (already computed earlier as pred_all)
+train_eval <- tibble(
+  Observed = train_data$Y,
+  Predicted = pred_all,
+  Dataset = "Training"
+)
+
+# Predictions for test data using the SAME trained model (lm_fit_10.2)
+test_pred <- predict(lm_fit_10.2, new_data = test_data)$.pred
+
+test_eval <- tibble(
+  Observed = test_data$Y,
+  Predicted = test_pred,
+  Dataset = "Test"
+)
+
+# Combine training and test data
+eval_df <- bind_rows(train_eval, test_eval)
+
+# Plot observed vs predicted for BOTH datasets
+ggplot(eval_df, aes(x = Observed, y = Predicted, color = Dataset, shape = Dataset)) +
+  geom_point(size = 2.5, alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  coord_cartesian(xlim = c(0,5000), ylim = c(0,5000)) +
+  theme_bw() +
+  labs(
+    title = "Observed vs Predicted (Training vs Test Data)",
+    x = "Observed Y",
+    y = "Predicted Y"
+  )
+```
+
+The plot shows predicted versus observed values for both the training and test data. The test data points are generally mixed in with the training data points and follow a similar pattern relative to the 45-degree reference line. This suggests that the model generalizes reasonably well to new data and is not strongly overfitting the training data. While there is still noticeable scatter, especially at higher values, the overall agreement between predicted and observed values is similar for both datasets.
+
+## Did our models perform better than the null model?
+
+Yes, both of the actual models did better than the null. The difference is clear when you look at the RMSE values. The null model has an RMSE of about 948, while Model 1 drops that to around 703, and Model 2 reduces it further to about 627. This improvement happens because the null model ignores all predictors and simply assigns the same average value to everyone. In contrast, Model 1 and Model 2 use actual information from the data to adjust predictions. As a result, they are able to capture real variation in the outcome, which leads to smaller prediction errors.
+
+## Does model 1 with only dose in the model improve results over the null model? Do the results make sense? Would you consider this model “usable” for any real purpose?
+
+Model 1 clearly improves over the null model, as shown by the drop in RMSE from 948 to 703. This makes sense because dose is strongly related to drug exposure, so even a simple model using only dose captures a large portion of the signal in the data. However, the model is still quite limited. Since dose only takes a few distinct values, the model produces only a few predicted values, which show up as horizontal lines in the prediction plot. That means everyone with the same dose gets the same prediction, even though individuals still vary quite a bit. Because of this, while Model 1 is useful for understanding the general trend, it would not be very reliable for making real-world predictions.
+
+## Does model 2 with all predictors further improve results? Do the results make sense? Would you consider this model “usable” for any real purpose?
+
+Model 2 improves performance further, reducing the RMSE from 703 to 627, which shows that adding variables like age, sex, weight, and height helps explain additional variability in the outcome. The predictions also align more closely with the observed values compared to Model 1. That said, the improvement is more modest compared to the jump from the null model to Model 1. This suggests that while these additional predictors do help, dose is still the main driver of the outcome. There are also signs that the model is not fully capturing the data, such as the tendency to underestimate higher values. So while Model 2 is the best of the models tested and more usable than Model 1, it still has limitations and could likely be improved.
