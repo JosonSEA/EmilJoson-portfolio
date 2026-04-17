@@ -1,0 +1,444 @@
+---
+title: "Tidy Tuesday Exercise"
+---
+
+## Introduction
+
+For this week's exercise, I analyzed the Tidy Tuesday dataset *Bird Sightings at Sea*. This dataset contains bird observations collected near New Zealand from 1969 to 1990, along with environmental conditions recorded from ships. This makes it possible to explore how environmental factors might influence bird abundance.
+
+## Load libraries and data
+
+```{r}
+# load libraries needed for data wrangling, visualization, and modeling
+library(tidyverse)
+library(tidymodels)
+library(yardstick)
+library(ranger)
+library(glmnet)
+
+# read data directly from GitHub
+beaufort_scale <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-14/beaufort_scale.csv")
+birds <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-14/birds.csv")
+sea_states <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-14/sea_states.csv")
+ships <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2026/2026-04-14/ships.csv")
+```
+
+## Exploratory data analysis
+
+To better understand the dataset, I first explored the structure of the four tables and then joined the bird observations with the ship/environment data using `record_id`.
+
+```{r}
+# inspect the datasets
+
+glimpse(beaufort_scale)
+glimpse(birds)
+glimpse(sea_states)
+glimpse(ships)
+
+# combine bird observations with environmental data
+combined_data <- birds %>%
+  left_join(ships, by = "record_id")
+```
+
+A quick summary of bird counts showed that the data were highly skewed, with many very small counts and a few very large ones.
+
+```{r}
+# summarize bird counts
+combined_data %>%
+  summarise(
+    min_count = min(count, na.rm = TRUE),
+    median_count = median(count, na.rm = TRUE),
+    mean_count = mean(count, na.rm = TRUE),
+    max_count = max(count, na.rm = TRUE)
+  )
+```
+
+I also looked at which species appeared most often in the dataset.
+
+```{r}
+# identify the top 10 most frequently observed species
+top_species_tbl <- combined_data %>%
+  count(species_common_name, sort = TRUE) %>%
+  slice_head(n = 10)
+
+# plot the top 10 species
+ggplot(top_species_tbl, aes(x = reorder(species_common_name, n), y = n)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Top 10 Most Observed Bird Species",
+    x = "Species",
+    y = "Number of Observations"
+  )
+```
+
+The distribution of bird counts confirmed that the response variable was strongly right-skewed.
+
+```{r}
+# plot the full distribution of bird counts
+ggplot(combined_data, aes(x = count)) +
+  geom_histogram(bins = 50) +
+  labs(
+    title = "Distribution of Bird Counts",
+    x = "Number of Birds Observed",
+    y = "Frequency"
+  )
+```
+
+To explore possible relationships with environmental variables, I looked at bird counts across sea state, wind speed class, season, and time.
+
+```{r}
+# bird counts by sea state
+ggplot(combined_data, aes(x = factor(sea_state_class), y = count)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    title = "Bird Counts by Sea State",
+    x = "Sea State Class",
+    y = "Number of Birds"
+  )
+```
+
+```{r}
+# bird counts by wind speed class
+ggplot(combined_data, aes(x = factor(wind_speed_class), y = count)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    title = "Bird Counts by Wind Speed Class",
+    x = "Wind Speed Class",
+    y = "Number of Birds"
+  )
+```
+
+```{r}
+# summarize total birds by date
+# this gives a rough look at how counts change over time
+daily_counts <- combined_data %>%
+  group_by(date) %>%
+  summarise(total_birds = sum(count, na.rm = TRUE), .groups = "drop")
+
+# plot total birds over time
+ggplot(daily_counts, aes(x = date, y = total_birds)) +
+  geom_line() +
+  labs(
+    title = "Total Bird Counts Over Time",
+    x = "Date",
+    y = "Total Birds Observed"
+  )
+```
+
+```{r}
+# bird counts by season
+ggplot(combined_data, aes(x = season, y = count)) +
+  geom_boxplot() +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(
+    title = "Bird Counts by Season",
+    x = "Season",
+    y = "Number of Birds"
+  )
+```
+
+```{r}
+# summarize bird counts by season and wind speed class
+combined_data %>%
+  group_by(season, wind_speed_class) %>%
+  summarise(
+    mean_count = mean(count, na.rm = TRUE),
+    median_count = median(count, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) %>%
+  arrange(season, wind_speed_class)
+```
+
+Overall, the exploratory analysis suggested that bird counts are highly variable and strongly influenced by species identity, while environmental variables may have smaller but still meaningful effects.
+
+## Research question and hypothesis
+
+**Question**
+Do environmental conditions (wind speed, sea state, and season) influence bird abundance, and do these effects differ among the most commonly observed bird species?
+
+**Hypothesis**
+Environmental conditions will influence bird counts, but species identity will likely explain a large portion of the variation, with different species responding differently to environmental factors.
+
+## Data preparation for modeling
+
+To keep the modeling focused and manageable, I limited the analysis to the 10 most frequently observed species.
+
+```{r}
+# keep only the top 10 most frequently observed species
+top_species <- combined_data %>%
+  count(species_common_name, sort = TRUE) %>%
+  slice_head(n = 10) %>%
+  pull(species_common_name)
+
+# subset data for modeling and remove incomplete rows
+model_data <- combined_data %>%
+  filter(species_common_name %in% top_species) %>%
+  select(count, wind_speed_class, sea_state_class, season, species_common_name) %>%
+  drop_na()
+```
+
+I then split the data into training and testing sets. The test set was held aside and only used once at the end for final model evaluation.
+
+```{r}
+# set seed for reproducibility
+set.seed(123)
+
+# split data into training (80%) and testing (20%)
+data_split <- initial_split(model_data, prop = 0.8)
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+# check split sizes
+nrow(train_data)
+nrow(test_data)
+```
+
+Because bird counts were highly skewed, I log-transformed the outcome before modeling.
+
+```{r}
+# log-transform the outcome to reduce skew and stabilize variance
+train_data_log <- train_data %>%
+  mutate(log_count = log(count + 1))
+
+test_data_log <- test_data %>%
+  mutate(log_count = log(count + 1))
+```
+
+Cross-validation was performed using the training data only.
+
+```{r}
+# create 5-fold cross-validation splits using training data only
+set.seed(123)
+cv_folds <- vfold_cv(train_data_log, v = 5)
+
+# define a recipe for preprocessing
+# dummy variables are created for categorical predictors
+bird_recipe <- recipe(
+  log_count ~ wind_speed_class + sea_state_class + season + species_common_name,
+  data = train_data_log
+) %>%
+  step_dummy(all_nominal_predictors())
+
+# define evaluation metrics
+model_metrics <- metric_set(rmse, rsq)
+```
+
+## Model 1: Linear regression
+
+The first model was a standard linear regression model fit using cross-validation.
+
+```{r}
+# define a linear regression model
+lm_model_cv <- linear_reg() %>%
+  set_engine("lm")
+
+# combine the recipe and model in a workflow
+lm_workflow <- workflow() %>%
+  add_recipe(bird_recipe) %>%
+  add_model(lm_model_cv)
+
+# fit the model using cross-validation on the training data
+lm_cv_results <- lm_workflow %>%
+  fit_resamples(
+    resamples = cv_folds,
+    metrics = model_metrics,
+    control = control_resamples(save_pred = TRUE)
+  )
+
+# collect cross-validated performance metrics
+collect_metrics(lm_cv_results)
+```
+
+## Model 2: Penalized regression
+
+The second model was a penalized regression model (LASSO), where the penalty parameter was tuned using cross-validation.
+
+```{r}
+# define a penalized regression model
+# mixture = 1 specifies LASSO
+# penalty is tuned across a grid of values
+glmnet_model <- linear_reg(
+  penalty = tune(),
+  mixture = 1
+) %>%
+  set_engine("glmnet")
+
+# combine the recipe and model into a workflow
+glmnet_workflow <- workflow() %>%
+  add_recipe(bird_recipe) %>%
+  add_model(glmnet_model)
+
+# create a grid of penalty values to test
+penalty_grid <- grid_regular(
+  penalty(range = c(-4, 1)),
+  levels = 20
+)
+
+# tune the model using cross-validation
+glmnet_cv_results <- glmnet_workflow %>%
+  tune_grid(
+    resamples = cv_folds,
+    grid = penalty_grid,
+    metrics = model_metrics,
+    control = control_grid(save_pred = TRUE)
+  )
+
+# collect cross-validated performance metrics
+collect_metrics(glmnet_cv_results)
+
+# identify the best penalty value based on RMSE
+best_glmnet <- select_best(glmnet_cv_results, metric = "rmse")
+best_glmnet
+
+# finalize the workflow with the best tuning value
+final_glmnet_workflow <- finalize_workflow(
+  glmnet_workflow,
+  best_glmnet
+)
+```
+
+## Model 3: Random forest
+
+The third model was a random forest, with `mtry` and `min_n` tuned using cross-validation.
+
+```{r}
+# define a random forest model
+rf_model_cv <- rand_forest(
+  mode = "regression",
+  mtry = tune(),
+  min_n = tune(),
+  trees = 500
+) %>%
+  set_engine("ranger")
+
+# combine the recipe and model into a workflow
+rf_workflow <- workflow() %>%
+  add_recipe(bird_recipe) %>%
+  add_model(rf_model_cv)
+
+# create a grid of tuning values for random forest
+rf_grid <- grid_regular(
+  mtry(range = c(1, 8)),
+  min_n(range = c(2, 20)),
+  levels = 4
+)
+
+# tune the random forest model using cross-validation
+rf_cv_results <- rf_workflow %>%
+  tune_grid(
+    resamples = cv_folds,
+    grid = rf_grid,
+    metrics = model_metrics,
+    control = control_grid(save_pred = TRUE)
+  )
+
+# collect cross-validated performance metrics
+collect_metrics(rf_cv_results)
+
+# select the best random forest settings based on RMSE
+best_rf <- select_best(rf_cv_results, metric = "rmse")
+best_rf
+```
+
+## Comparing model performance
+
+To compare the three models fairly, I summarized RMSE and R-squared values from cross-validation.
+
+```{r}
+# collect random forest metrics for later filtering
+rf_metrics <- collect_metrics(rf_cv_results)
+
+# summarize linear regression metrics
+lm_metrics <- collect_metrics(lm_cv_results) %>%
+  filter(.metric %in% c("rmse", "rsq")) %>%
+  select(.metric, mean) %>%
+  mutate(model = "Linear Regression")
+
+# summarize penalized regression metrics using the best penalty value
+glmnet_metrics <- collect_metrics(glmnet_cv_results) %>%
+  filter(penalty == best_glmnet$penalty) %>%
+  filter(.metric %in% c("rmse", "rsq")) %>%
+  select(.metric, mean) %>%
+  mutate(model = "Penalized Regression")
+
+# summarize random forest metrics using the best tuned settings
+rf_best_metrics <- rf_metrics %>%
+  filter(mtry == best_rf$mtry, min_n == best_rf$min_n) %>%
+  filter(.metric %in% c("rmse", "rsq")) %>%
+  select(.metric, mean) %>%
+  mutate(model = "Random Forest")
+
+# combine metrics from all models into one table
+model_comparison <- bind_rows(
+  lm_metrics,
+  glmnet_metrics,
+  rf_best_metrics
+)
+
+# present the comparison table in a wide format
+model_comparison %>%
+  pivot_wider(names_from = .metric, values_from = mean) %>%
+  mutate(
+    rmse = round(rmse, 3),
+    rsq = round(rsq, 3)
+  )
+```
+
+Three models were evaluated using cross-validation: a linear regression model, a penalized regression model (LASSO), and a random forest model. The linear and penalized models performed almost identically (RMSE ≈ 0.677), suggesting that regularization did not provide much benefit. The random forest model achieved the lowest RMSE (~0.670), indicating slightly better predictive performance. Although the improvement was small, the random forest was selected as the final model because it can capture nonlinear relationships and interactions between predictors, which are likely present in ecological data.
+
+## Final evaluation on the test set
+
+After selecting the random forest as the final model, I fit it using all training data and then evaluated it on the test set.
+
+```{r}
+# finalize the random forest workflow with the best tuning values
+final_rf_workflow <- finalize_workflow(
+  rf_workflow,
+  best_rf
+)
+
+# fit the final random forest model on all training data
+final_rf_fit <- final_rf_workflow %>%
+  fit(data = train_data_log)
+
+# generate predictions on the test dataset
+final_rf_preds <- predict(final_rf_fit, test_data_log) %>%
+  bind_cols(test_data_log)
+
+# calculate test-set performance metrics
+test_metrics <- final_rf_preds %>%
+  metrics(truth = log_count, estimate = .pred)
+
+test_metrics
+```
+
+I also examined residuals to get a more honest sense of model fit.
+
+```{r}
+# calculate residuals on the test data
+final_rf_preds <- final_rf_preds %>%
+  mutate(residual = log_count - .pred)
+
+# plot residuals against predicted values
+ggplot(final_rf_preds, aes(x = .pred, y = residual)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Residuals vs Predicted Values (Test Data)",
+    x = "Predicted log_count",
+    y = "Residuals"
+  )
+```
+
+The final random forest model achieved test performance similar to its cross-validation results, suggesting that it generalizes reasonably well to new data. However, the residual plot still showed some structure and non-random patterns, indicating that the model does not fully capture all relationships in the data. This is likely due to the highly variable and skewed nature of bird count observations.
+
+## Discussion
+
+This analysis explored whether environmental conditions influence bird abundance and whether these effects differ across species. The exploratory analysis showed that bird counts are highly skewed, with many small observations and a few extremely large values. After log-transforming the outcome, model performance improved substantially and made it easier to identify relationships in the data.
+
+Across all three models, performance was fairly similar, with the random forest model performing slightly better than the two linear approaches. This suggests that while some nonlinear relationships or interactions may be present, the overall structure of the data is not extremely complex. Species identity consistently played an important role, indicating that differences among species explain more variation in bird counts than environmental conditions alone.
+
+Although the final model performed reasonably well, the residual analysis showed that some variation remains unexplained. Overall, environmental conditions do appear to influence bird abundance, but much of the variation is driven by species-specific differences and other unmeasured factors. This highlights both the value and the limitations of predictive modeling in ecological data. Future work could improve performance by incorporating additional predictors such as spatial location, finer-scale temporal information, or species-specific ecological traits.
