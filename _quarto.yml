@@ -25,6 +25,8 @@ website:
             file: fitting-exercise/fitting-exercise.qmd
           - text: "Tidy Tuesday"
             file: tidytuesday-exercise/tidytuesday-exercise.qmd
+          - text: "Machine Learning"
+            file: ml-models-exercise/ml-models-exercise.qmd
     right:
       - icon: github 
         href: https://github.com/JosonSEA/EmilJoson-portfolio.git        

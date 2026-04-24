@@ -162,6 +162,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../tidytuesday-exercise/tidytuesday-exercise.html">
  <span class="dropdown-text">Tidy Tuesday</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../ml-models-exercise/ml-models-exercise.html">
+ <span class="dropdown-text">Machine Learning</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -1033,6 +1037,9 @@ Coefficients:
 </figure>
 </div>
 </div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(data5, here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"fitting-exercise"</span>, <span class="st">"module-10-data_clean.rds"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The plot shows predicted versus observed values for both the training and test data. The test data points are generally mixed in with the training data points and follow a similar pattern relative to the 45-degree reference line. This suggests that the model generalizes reasonably well to new data and is not strongly overfitting the training data. While there is still noticeable scatter, especially at higher values, the overall agreement between predicted and observed values is similar for both datasets.</p>
 </section>

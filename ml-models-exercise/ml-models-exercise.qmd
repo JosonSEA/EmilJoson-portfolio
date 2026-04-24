@@ -1,0 +1,358 @@
+---
+title: "ML Models Exercise"
+---
+
+**Setup**
+```{r}
+#load libraries
+library(here) #for directory handling
+library(tidyverse) #for data handling
+library(tidymodels) #for modeling
+library(glmnet) #for modeling
+library(ranger) #for modeling
+library(corrplot) #for correlation
+
+#load data
+data <- readRDS(here("ml-models-exercise","module-10-data_clean.rds"))
+
+#inspect variable types and check for any issues
+glimpse(data)
+summary(data)
+```
+
+**Preliminaries**
+```{r}
+#set a random seed for reproducibility
+rngseed <- 1234
+set.seed(rngseed)
+```
+
+**More processing**
+
+```{r}
+#check levels that exist within the variable RACE
+unique(data$RACE)
+
+#collapse 88 and 7 into a single category "3"
+data <- data %>%
+  mutate(RACE = as.character(RACE)) %>%   # temporarily convert to character
+  mutate(RACE = ifelse(RACE %in% c("7", "88"), "3", RACE)) %>%  # recode
+  mutate(RACE = factor(RACE))  # convert back to factor
+
+#confirm RACE levels
+unique(data$RACE)
+```
+
+**Pairwise correlations**
+
+```{r}
+#select continuous (numeric) variables
+cont_data <- data %>%
+  select(Y, DOSE, AGE, WT, HT)
+
+#compute correlation matrix
+cor_matrix <- cor(cont_data)
+
+#view correlation matrix 
+cor_matrix
+
+#create correlation plot
+pastel_cols <- colorRampPalette(c("#BFD7EA", "#FFFFFF", "#F7C6C7")) #set pastel colors
+corrplot(cor_matrix,
+         method = "color", #heatmap
+         type = "upper", #shows only upper triangle
+         col = pastel_cols(200),
+         addCoef.col = "black", #adds correlation values on the plot
+         tl.col = "black",
+         tl.srt = 45)
+```
+
+**Feature engineering**
+
+```{r}
+#check HT and WT data
+summary(data$WT) #probably in kg
+summary(data$HT) #probably in m
+
+#calculate BMI
+data <- data %>%
+  mutate(
+    BMI = WT / (HT^2)
+  )
+
+#check BMI variable
+summary(data$BMI)
+```
+
+**Model building**
+**First fit**
+
+```{r}
+#define recipe: outcome is Y, predictors are all other variables
+rec <- recipe(Y ~ ., data = data) %>%
+  step_dummy(all_nominal_predictors()) #for handling non-numeric variables
+
+##MODELING
+#LINEAR MODEL
+#define linear regression model
+lm_mod <- linear_reg() %>%
+  set_engine("lm")
+
+#create workflow
+lm_wf <- workflow() %>%
+  add_model(lm_mod) %>%
+  add_recipe(rec)
+
+#fit model
+lm_fit <- fit(lm_wf, data = data)
+
+#LASSO MODEL
+#define LASSO model with penalty = 0.1
+lasso_mod <- linear_reg(penalty = 0.1, mixture = 1) %>%
+  set_engine("glmnet")
+
+#create workflow
+lasso_wf <- workflow() %>%
+  add_model(lasso_mod) %>%
+  add_recipe(rec)
+
+#fit model
+lasso_fit <- fit(lasso_wf, data = data)
+
+#RANDOM FOREST MODEL
+#define random forest model (default settings)
+rf_mod <- rand_forest(mode = "regression") %>%
+  set_engine("ranger", seed = rngseed)
+
+#create workflow
+rf_wf <- workflow() %>%
+  add_model(rf_mod) %>%
+  add_recipe(rec)
+
+#fit model
+rf_fit <- fit(rf_wf, data = data)
+
+##PREDICTIONS
+#linear model predictions
+lm_preds <- predict(lm_fit, new_data = data) %>%
+  bind_cols(data %>% select(Y))
+
+rmse(lm_preds, truth = Y, estimate = .pred)
+
+#LASSO predictions
+lasso_preds <- predict(lasso_fit, new_data = data) %>%
+  bind_cols(data %>% select(Y))
+
+rmse(lasso_preds, truth = Y, estimate = .pred)
+
+#random forest predictions
+rf_preds <- predict(rf_fit, new_data = data) %>%
+  bind_cols(data %>% select(Y))
+
+rmse(rf_preds, truth = Y, estimate = .pred)
+
+#plot observed vs predicted; linear
+ggplot(lm_preds, aes(x = Y, y = .pred)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  theme_bw() +
+  labs(title = "Linear Model: Observed vs Predicted",
+       x = "Observed Y",
+       y = "Predicted Y")
+
+#plot observed vs predicted; LASSO
+ggplot(lasso_preds, aes(x = Y, y = .pred)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  theme_bw() +
+  labs(title = "LASSO Model: Observed vs Predicted",
+       x = "Observed Y",
+       y = "Predicted Y")
+
+#The linear model and LASSO produce very similar plots because the penalty applied in the LASSO model is relatively small (0.1). As a result, the coefficients are only slightly shrunk, and the model behaves very similarly to a standard linear regression. Since little regularization is occurring, both models generate nearly identical predictions and therefore similar observed vs predicted plots.
+
+#plot observed vs predicted; random forest
+ggplot(rf_preds, aes(x = Y, y = .pred)) +
+  geom_point(alpha = 0.6) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  theme_bw() +
+  labs(title = "Random Forest Model: Observed vs Predicted",
+       x = "Observed Y",
+       y = "Predicted Y")
+
+#compute RMSE for each model
+lm_rmse <- rmse(lm_preds, truth = Y, estimate = .pred)
+lasso_rmse <- rmse(lasso_preds, truth = Y, estimate = .pred)
+rf_rmse <- rmse(rf_preds, truth = Y, estimate = .pred)
+
+#create summary table of RMSE values
+rmse_table <- tibble(
+  Model = c("Linear Model", "LASSO", "Random Forest"),
+  RMSE = c(lm_rmse$.estimate,
+           lasso_rmse$.estimate,
+           rf_rmse$.estimate)
+)
+
+rmse_table
+```
+
+**Tuning the models**
+
+```{r}
+##LASSO
+#create a recipe for the LASSO model
+lasso_rec <- recipe(Y ~ ., data = data) %>%
+  step_dummy(all_nominal_predictors()) %>%
+  step_normalize(all_predictors())
+
+#define the LASSO model
+lasso_mod_tune <- linear_reg(
+  penalty = tune(),
+  mixture = 1
+) %>%
+  set_engine("glmnet")
+
+#combine the recipe and model into a workflow
+lasso_wf_tune <- workflow() %>%
+  add_recipe(lasso_rec) %>%
+  add_model(lasso_mod_tune)
+
+#create a grid of 50 penalty values from 1e-5 to 1e2
+lasso_grid <- tibble(
+  penalty = 10^seq(-5, 2, length.out = 50)
+)
+
+#create an apparent resampling object
+lasso_resamples <- apparent(data)
+
+#tune the LASSO model across all penalty values in the grid
+lasso_tune_res <- tune_grid(
+  lasso_wf_tune,
+  resamples = lasso_resamples,
+  grid = lasso_grid,
+  metrics = metric_set(rmse)
+)
+
+#collect the tuning results 
+lasso_metrics <- collect_metrics(lasso_tune_res, summarize = FALSE)
+
+lasso_metrics
+
+#find the penalty value with the lowest RMSE
+best_lasso <- lasso_metrics %>%
+  arrange(.estimate) %>%
+  slice(1)
+
+best_lasso
+
+#plot RMSE versus penalty (for the life of me could not figure how to get autoplot to work)
+ggplot(lasso_metrics, aes(x = penalty, y = .estimate)) +
+  geom_line() +
+  geom_point() +
+  scale_x_log10() +
+  theme_bw() +
+  labs(
+    title = "LASSO Tuning Results",
+    x = "Penalty",
+    y = "RMSE"
+  )
+
+#I think the LASSO tuning results show that the model performs best when the penalty is very small because at that point it’s basically acting like a regular linear regression with almost no shrinkage. As the penalty increases, the model starts shrinking the coefficients more, which simplifies things but also removes useful information from the predictors. Because of that, the predictions get worse and the RMSE increases. I think the RMSE doesn’t go lower than the linear model because LASSO is still a linear method, so it can’t really do better than the ordinary least squares fit on the same data. Since we’re using apparent resampling and evaluating on the same data we trained on, the full linear model already gives the best possible fit, and adding any penalty just makes the model perform worse.
+
+##RANDOM FOREST
+#define random forest model
+rf_mod_tune <- rand_forest(
+  mtry = tune(),
+  min_n = tune(),
+  trees = 300,
+  mode = "regression"
+) %>%
+  set_engine("ranger", seed = rngseed)
+
+#create a recipe
+rf_rec <- recipe(Y ~ ., data = data)
+
+#create workflow
+rf_wf_tune <- workflow() %>%
+  add_recipe(rf_rec) %>%
+  add_model(rf_mod_tune)
+
+#create tuning grid
+rf_grid <- grid_regular(
+  mtry(range = c(1, 7)), #mtry from 1 to 7
+  min_n(range = c(1, 21)), #min_n from 1 to 21
+  levels = 7
+)
+
+#use apparent resampling 
+rf_resamples <- apparent(data)
+
+#run tuning
+rf_tune_res <- tune_grid(
+  rf_wf_tune,
+  resamples = rf_resamples,
+  grid = rf_grid,
+  metrics = metric_set(rmse)
+)
+
+#collect unsummarized results 
+rf_metrics <- collect_metrics(rf_tune_res, summarize = FALSE)
+
+rf_metrics
+
+#plot RMSE across the random forest tuning parameters
+ggplot(rf_metrics, aes(x = mtry, y = .estimate, color = factor(min_n), group = min_n)) +
+  geom_line() +
+  geom_point() +
+  theme_bw() +
+  labs(
+    title = "Random Forest Tuning Results",
+    x = "mtry",
+    y = "RMSE",
+    color = "min_n"
+  )
+```
+
+**Tuning with CV**
+```{r}
+##LASSO
+#create 5-fold cross-validation repeated 5 times
+folds <- vfold_cv(data, v = 5, repeats = 5)
+
+#tune LASSO using cross-validation
+lasso_tune_res_cv <- tune_grid(
+  lasso_wf_tune,
+  resamples = folds,   # <-- THIS is the only change
+  grid = lasso_grid,
+  metrics = metric_set(rmse)
+)
+
+#view summarized results
+collect_metrics(lasso_tune_res_cv)
+
+#plot tuning results (autoplot now works!)
+autoplot(lasso_tune_res_cv)
+
+##RANDOM FOREST
+#tune random forest using cross-validation
+rf_tune_res_cv <- tune_grid(
+  rf_wf_tune,
+  resamples = folds,   # <-- same change
+  grid = rf_grid,
+  metrics = metric_set(rmse)
+)
+
+#view summarized results
+collect_metrics(rf_tune_res_cv)
+
+#plot tuning results
+autoplot(rf_tune_res_cv)
+
+#I think the main reason the RMSE increased for both models when using cross-validation is because the models are now being evaluated on unseen data instead of the same data they were trained on. When we used apparent resampling before, the models were essentially being tested on the training data, so the performance looked much better than it actually was. With cross-validation, the models have to make predictions on new data, which gives a more realistic estimate of performance, so the RMSE increases. 
+# 
+# For the LASSO model, I still see that the best performance happens at very small penalty values. I think this is because when the penalty is close to zero, the LASSO behaves almost like a regular linear model and keeps most of the useful information from the predictors. As the penalty increases, the coefficients are shrunk more, which removes important information and leads to worse predictions.
+# 
+# For the random forest, I think it performed much better before because it is a very flexible model and was likely overfitting the training data. With cross-validation, that overfitting is penalized because the model is tested on unseen data, so its performance drops a lot. Compared to LASSO, the random forest now has a higher RMSE, which suggests it does not generalize as well in this case.
+# 
+# Overall, I think the LASSO model performs better because it has a lower RMSE under cross-validation, meaning it makes more accurate predictions on new data.
+```

@@ -470,6 +470,10 @@ ggplot(eval_df, aes(x = Observed, y = Predicted, color = Dataset, shape = Datase
   )
 ```
 
+```{r}
+saveRDS(data5, here::here("fitting-exercise", "module-10-data_clean.rds"))
+```
+
 The plot shows predicted versus observed values for both the training and test data. The test data points are generally mixed in with the training data points and follow a similar pattern relative to the 45-degree reference line. This suggests that the model generalizes reasonably well to new data and is not strongly overfitting the training data. While there is still noticeable scatter, especially at higher values, the overall agreement between predicted and observed values is similar for both datasets.
 
 ## Did our models perform better than the null model?
